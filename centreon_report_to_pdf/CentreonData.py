@@ -1,19 +1,26 @@
 import pandas as pd
 
+import Settings
+csv_filepath=Settings.csv_filepath
+
+
+
 # Function to get the two first lines from centreon CSV
 # data example:
 # 1 ServiceGroup;Begin date; End date; Duration
 # 2 Service_name;23/02/2020 00:00:00; 01/03/2020 00:00:00; 604800s
-def get_centreon_csv_info (filepath):
+def get_centreon_csv_info ():
     """Function to get the two first lines from centreon CSV"""
     
     # Read the CSV File
     # Conserver "begin date" and "end date" to datetime64 
-    csv_info = pd.read_csv (filepath,  sep=";",  nrows=1, parse_dates=[1, 2] ,  dayfirst=True)
+    csv_info = pd.read_csv (csv_filepath,  sep=";",  nrows=1, parse_dates=[1, 2] ,  dayfirst=True)
     
     return csv_info
-    
-    
+
+
+########################################
+########################################    
 # Function to get the information resumen from centreon CSV between lines 5-11
 # The manual head is necesary because a error in the CSV file that add an extra ";" at the end of lines.
 # data example:
@@ -24,14 +31,14 @@ def get_centreon_csv_info (filepath):
 #  9 Unknown;0%;0%;0;
 # 10 Scheduled Downtimes;0%;;;
 # 11 Undetermined;0%;;;
-def get_centreon_csv_resume (filepath):
+def get_centreon_csv_resume ():
     """Function to get the information resumen from centreon CSV between lines 5-11"""
     
     # Define columns to be used
     COLUMN_DATA=["Status", "Total Time",   "Mean Time",  "Alert"]
 
     # Read the CSV File
-    csv_resume = pd.read_csv (filepath,  sep=";",  nrows=6,  skiprows=4,  usecols=COLUMN_DATA)
+    csv_resume = pd.read_csv (csv_filepath,  sep=";",  nrows=6,  skiprows=4,  usecols=COLUMN_DATA)
 
     # Rename columns names that will be in the PDF
     csv_resume.columns = ["Status",  "Total Time",  "Mean Time",  "Alerts"]
@@ -49,8 +56,10 @@ def get_centreon_csv_resume (filepath):
     csv_resume['Alerts'] = csv_resume['Alerts'].astype(int)
 
     return csv_resume
-    
-    
+
+
+########################################
+########################################      
 # Function to get the information details fro mcentreon CSV placed after line 15
 # Is necesary to force pandas to process the blank line to know where we need to stop
 # data example:
@@ -67,7 +76,7 @@ def get_centreon_csv_resume (filepath):
 # 61 Day;Duration;OK Mean Time;OK Alert;Warning Mean Time;Warning Alert;Unknown Mean Time;Unknown Alert;Critical Mean     Time;Critical Alert;Day
 # 62 1582945200;55450.7462s;99.96%;2;0.02%;1;0%;0;0.02%;1;2020-02-29 00:00:00;
 # 63 1582858800;55450.7463s;100%;0;0%;0;0%;0;0%;0;2020-02-28 00:00:00;
-def get_centreon_csv_details (filepath):
+def get_centreon_csv_details ():
     """Function to get the information details fro mcentreon CSV placed after line 15"""
     # Define columns to be used
     # TODO - Change the two first columns to index
@@ -75,7 +84,7 @@ def get_centreon_csv_details (filepath):
 
     # read the CSV file after line 15 where the headers start
     # Force dtype to "Unknown Alert" - BUG :-(
-    csv_details = pd.read_csv (filepath,  sep=";",  skiprows=14, skip_blank_lines=False,  usecols=COLUMN_DATA,  dtype={"Unknown Alert":'str'})
+    csv_details = pd.read_csv (csv_filepath,  sep=";",  skiprows=14, skip_blank_lines=False,  usecols=COLUMN_DATA,  dtype={"Unknown Alert":'str'})
     
     # check by blank lines
     try:
@@ -98,5 +107,5 @@ def get_centreon_csv_details (filepath):
 
     # Retun the details dataframe
     return csv_details
-    
-    
+
+
