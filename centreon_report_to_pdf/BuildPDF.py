@@ -438,40 +438,6 @@ def build_report():
     
     # Add the pie to contents on Frame_Graphic
     contents.append(chart)
-    
-#    logoleft = Image('/tmp/firodo-port-25.png')
-#    logoleft._restrictSize(20*mm, 20*mm)
-#    logoleft.hAlign = 'LEFT'
-#    logoleft.vAlign = 'CENTER'
-#    logoright = Image('/tmp/mona-tc.png')
-#    logoright._restrictSize(20*mm, 20*mm)
-#    logoright.hAlign = 'RIGHT'
-#    logoright.vAlign = 'CENTER'
-##    contents.append(logoleft)
-##    contents.append(FrameBreak())
-#    #
-#    ##json_file = open("details.txt","r",encoding='utf-8')
-#    ##details = json.load(json_file)
-#    isctitle = styleSheet['Title']
-#    isctitle.fontSize=12
-#    isctitle.alignment=TA_CENTER
-#    isctitle.leading=10
-#    contents.append(Paragraph("INTERNATIONAL KING VHS UNION. Raamstraat 78, Delft",isctitle))
-#    theme = styleSheet['Normal']
-#    theme.fontSize=10
-#    theme.alignment=TA_CENTER
-#    theme.leading = 14
-#    contents.append(Paragraph("VHS",theme))
-#    celebrant=styleSheet['Normal']
-#    celebrant.fontSize=10
-#    celebrant.alignment=TA_CENTER
-#    celebrant.leading = 14
-#    contents.append(Paragraph("president",celebrant))
-#    date = styleSheet['Normal']
-#    date.fontSize=10
-#    date.alignment=TA_CENTER
-#    date.leading = 14
-#    contents.append(Paragraph("date",date))
 
     # Next content will be the Information on Frame_Info
     contents.append(FrameBreak())
