@@ -59,9 +59,6 @@ column_undetermined_alerts = [(11, 0), (11, -1)]
 
 
 # Output document
-# Landscape
-#template = PageTemplate('normal',  [Frame(DOCMARGIN, DOCMARGIN, 287*mm,200*mm, id='F1')])
-# Letter
 doc = BaseDocTemplate(
     pdf_output_file,
     pagesize=A4, 
@@ -228,7 +225,7 @@ def pie_chart_with_legend():
     # Set some Pie parameters
     pie = Pie()
     pie.x = 14*mm
-    pie.y = 10*mm
+    pie.y = 5*mm
     pie.height = 60*mm
     pie.width = 60*mm
     pie.data = data_list
@@ -327,10 +324,10 @@ def build_table_resume():
     extra_table_foot=[['Total', '', '', total_alerts ]]
     # Conact the header + data to list + t
     data_list=[data_df.columns.values.tolist()] + data_df.values.tolist() + list(extra_table_foot)
-
+    
     # Generate the table using the list and repeat the headers if necesary
     table=Table(data=data_list,  repeatRows=0, rowHeights=15 )
-
+    
     # Apply some styles to table and cells
     table.setStyle(styleTable)
     table.setStyle(styleTableResume)
@@ -401,11 +398,10 @@ def build_report():
 #    styleSheet = getSampleStyleSheet()
 
     # Define some Frames to Page 02
-    Frame_Graphic = Frame(5*mm, height-85*mm, (width-10*mm)/2, 80*mm,showBoundary = 0)
+    Frame_Graphic = Frame(5*mm, height-80*mm, (width-10*mm)/2, 75*mm,showBoundary = 0)
     Frame_Info = Frame((width)/2, height-30*mm, (width-10*mm)/2, 25*mm,showBoundary = 0)
-    Frame_Resume = Frame((width)/2, height-85*mm, (width-10*mm)/2, 55*mm,showBoundary = 0)
-#    Frame_Details = Frame(5*mm, 5*mm, (width-10*mm), height-90*mm,showBoundary = 0,id='col1')
-    Frame_Details = Frame(5*mm, 5*mm, (width-10*mm), height-90*mm,showBoundary = 0)
+    Frame_Resume = Frame((width)/2, height-80*mm, (width-10*mm)/2, 50*mm,showBoundary = 0)
+    Frame_Details = Frame(5*mm, 5*mm, (width-10*mm), height-85*mm,showBoundary = 0)
 
     # Create a list with all frames to be in the second page
     framesSecondPage = []
@@ -415,7 +411,6 @@ def build_report():
     framesSecondPage.append(Frame_Details)
 
     # Define other Frames (all page) if table_details need more than one page
-#    Frame_Details_Continue = Frame(5*mm, 5*mm, (width-10*mm), (height-10*mm),showBoundary = 1,id='col1later')
     Frame_Details_Continue = Frame(5*mm, 5*mm, (width-10*mm), (height-10*mm),showBoundary = 0)
 
     # Create a list with frame to be in the anothers pages
@@ -442,7 +437,7 @@ def build_report():
     # Next content will be the Information on Frame_Info
     contents.append(FrameBreak())
     
-#    contents.append(build_table_info())
+    # Create and add INFO section
     for info_content in build_table_info():
         contents.append (info_content)
     
@@ -451,6 +446,8 @@ def build_report():
     
     #Create and add table_details on second page
     contents.append(build_table_resume())
+
+    contents.append
 
     # Next content will be on Frame_Details
     contents.append(FrameBreak())
