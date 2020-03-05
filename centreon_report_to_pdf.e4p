@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project centreon_report_to_pdf -->
-<!-- Saved: 2020-03-05, 09:02:15 -->
+<!-- Saved: 2020-03-05, 09:36:27 -->
 <!-- Copyright (C) 2020 Victor Hugo dos Santos, listas.vhs@gmail.com -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -14,7 +14,10 @@
   <Email>listas.vhs@gmail.com</Email>
   <Eol index="0"/>
   <Sources>
+    <Source>CentreonData.py</Source>
     <Source>__init__.py</Source>
+    <Source>centreon_report_to_pdf/__init__.py</Source>
+    <Source>centreon_report_to_pdf/centreon_report_to_pdf.py</Source>
   </Sources>
   <Others>
     <Other>.gitignore</Other>
