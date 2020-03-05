@@ -1,12 +1,11 @@
 from reportlab.lib.units import  mm
-from reportlab.platypus import BaseDocTemplate,Frame,Paragraph,PageBreak, PageTemplate,FrameBreak,NextPageTemplate
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT
+from reportlab.platypus import BaseDocTemplate,Frame,Paragraph, PageTemplate,FrameBreak,NextPageTemplate
+from reportlab.lib.styles import ParagraphStyle,  getSampleStyleSheet
+from reportlab.lib.enums import TA_LEFT,  TA_CENTER
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.colors import green, lightgreen,  red,  black,  orange,  grey,  blueviolet,  silver, salmon, whitesmoke
 
 from reportlab.graphics.shapes import Drawing
-#, String
 from reportlab.graphics.charts.piecharts import Pie
 
 #from reportlab.lib.styles import getSampleStyleSheet
@@ -255,6 +254,65 @@ def pie_chart_with_legend():
     
 ########################################
 ########################################  
+# Function to get INFO from CSV, format and create a table
+def build_table_info():
+    """Function to get INFO from CSV, format and create a table"""
+    # Get the data info from CSV file
+    data_df=get_centreon_csv_info()
+    
+    # Create a title content
+    contents_title = []
+    
+    # Get some defaults styles
+    styleSheet = getSampleStyleSheet()
+    
+    # Get the type of report
+    report_type = data_df.columns[0]
+    
+    # Get the report type
+    # TODO - maybe we will need it to use at details
+    if report_type == 'ServiceGroup':
+        report_type_name = 'Service Group'
+    elif report_type == 'Hostgroup':
+        report_type_name = 'Host Group'
+    elif report_type == 'Host':
+        report_type_name = 'Host'
+    else:
+        report_type_name = 'NONE'
+    
+    # Define style to Title
+    title = styleSheet['Title']
+    title.fontSize = 12
+    title.alignment=TA_CENTER
+    title.leading=10
+    
+    # Add the title
+    contents_title.append(Paragraph(report_type_name + ": " +  str(data_df[report_type][0]), title))
+
+    # Define style to Text
+    text = styleSheet['Normal']
+    text.fontSize=10
+    text.alignment=TA_CENTER
+    text.leading = 14
+
+    # Get the days between start and and
+    dates_diff = data_df[' End date'] - data_df['Begin date']
+    days_total= int(dates_diff.dt.days)
+    
+    # Format dates
+    date_begin = data_df['Begin date'].dt.strftime('%d/%b/%Y - %H:%M:%S')
+    date_end = data_df[' End date'].dt.strftime('%d/%b/%Y - %H:%M:%S')
+
+    # Add the info to contents
+    contents_title.append(Paragraph("Start Date: " +  str(date_begin[0]),  text))
+    contents_title.append(Paragraph(" End Date: " + str(date_end[0]),  text))
+    contents_title.append(Paragraph("( " + str(days_total) + " Days )",  text))
+
+    return contents_title
+
+
+########################################
+########################################  
 # Function to get RESUME data from CSV, format and create a table
 def build_table_resume():
     """Function to get RESUME data from CSV, format and create a table"""
@@ -343,10 +401,11 @@ def build_report():
 #    styleSheet = getSampleStyleSheet()
 
     # Define some Frames to Page 02
-    Frame_Graphic = Frame(5*mm, height-85*mm, (width-10*mm)/2, 80*mm,showBoundary = 1)
-    Frame_Info = Frame((width)/2, height-30*mm, (width-10*mm)/2, 25*mm,showBoundary = 1)
-    Frame_Resume = Frame((width)/2, height-85*mm, (width-10*mm)/2, 55*mm,showBoundary = 1)
-    Frame_Details = Frame(5*mm, 5*mm, (width-10*mm), height-90*mm,showBoundary = 1,id='col1')
+    Frame_Graphic = Frame(5*mm, height-85*mm, (width-10*mm)/2, 80*mm,showBoundary = 0)
+    Frame_Info = Frame((width)/2, height-30*mm, (width-10*mm)/2, 25*mm,showBoundary = 0)
+    Frame_Resume = Frame((width)/2, height-85*mm, (width-10*mm)/2, 55*mm,showBoundary = 0)
+#    Frame_Details = Frame(5*mm, 5*mm, (width-10*mm), height-90*mm,showBoundary = 0,id='col1')
+    Frame_Details = Frame(5*mm, 5*mm, (width-10*mm), height-90*mm,showBoundary = 0)
 
     # Create a list with all frames to be in the second page
     framesSecondPage = []
@@ -356,7 +415,8 @@ def build_report():
     framesSecondPage.append(Frame_Details)
 
     # Define other Frames (all page) if table_details need more than one page
-    Frame_Details_Continue = Frame(5*mm, 5*mm, (width-10*mm), (height-10*mm),showBoundary = 1,id='col1later')
+#    Frame_Details_Continue = Frame(5*mm, 5*mm, (width-10*mm), (height-10*mm),showBoundary = 1,id='col1later')
+    Frame_Details_Continue = Frame(5*mm, 5*mm, (width-10*mm), (height-10*mm),showBoundary = 0)
 
     # Create a list with frame to be in the anothers pages
     framesOthersPages = []
@@ -416,6 +476,10 @@ def build_report():
     # Next content will be the Information on Frame_Info
     contents.append(FrameBreak())
     
+#    contents.append(build_table_info())
+    for info_content in build_table_info():
+        contents.append (info_content)
+    
     # Next content will be the Resume on Frame_Resume
     contents.append(FrameBreak())
     
@@ -434,3 +498,5 @@ def build_report():
 #    contents.append(PageBreak())
 
     doc.build(contents)
+
+
