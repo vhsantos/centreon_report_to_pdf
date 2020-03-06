@@ -262,7 +262,7 @@ def foot1(canvas,doc):
     """Function to put the page number at the end of page"""
     canvas.saveState()
     canvas.setFont('Times-Roman',9)
-    canvas.drawString(width-20*mm, 2*mm, "Page %d %s" % doc.page)
+    canvas.drawString(width-20*mm, 2*mm, "Page %d" % doc.page)
     canvas.restoreState()
 
     
@@ -497,11 +497,14 @@ def build_table_details():
 ########################################
 ########################################  
 #  Function to build the PDF report with graph and tables
-def build_report():
+def prepare_report():
     """Function to build the PDF report with graph and tables"""
     
     # Define the variable contents
     contents =[]
+
+    # Initiate some variables based on the type of report (SG or HG)
+    get_centreon_report_type()
 
     # Define some Frames to Page 02
     Frame_Graphic = Frame(5*mm, height-80*mm, (width-10*mm)/2, 75*mm,showBoundary = 0)
@@ -563,9 +566,20 @@ def build_report():
     # Add table_details on second page
     contents.append(build_table_details())
 
-#    contents.append(NextPageTemplate('otherspages'))
-#    contents.append(PageBreak())
+    contents.append(NextPageTemplate('secondpage'))
+    contents.append(PageBreak())
 
-    doc.build(contents)
+    return contents
+
+def build_report():
+
+    all_contents = []
+    for file in Settings.SG_ID:
+        print (file)
+        Settings.csv_filepath=file
+        all_contents.extend(prepare_report())
+        
+    
+    doc.build(all_contents)
 
 

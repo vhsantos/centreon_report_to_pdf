@@ -13,14 +13,17 @@ from BuildPDF import *
 #print (Settings.csv_filepath)
 
 
-Settings.csv_filepath="/tmp/centreon-servicegroup.csv"
+#Settings.csv_filepath="/tmp/centreon-servicegroup.csv"
 #Settings.csv_filepath="/tmp/centreon-host.csv"
 #Settings.csv_filepath = "/tmp/centreon-hostgroup.csv"
 
-# Initiate some variables based on the type of report (SG or HG)
-get_centreon_report_type()
+Settings.SG_ID.extend(["/tmp/centreon-hostgroup.csv", "/tmp/centreon-servicegroup.csv",  "/tmp/centreon-report/nuevo-Servicios-GASCO.csv",  "/tmp/centreon-report/hostgroup-GASCO.csv" ])
+print (Settings.SG_ID)
+
 
 build_report()
+
+
 
 # If SG Report
 #if Settings.report_type == 'ServiceGroup':

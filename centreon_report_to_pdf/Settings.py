@@ -1,5 +1,9 @@
 # Global variables and parameters
 
+global SG_ID
+SG_ID = []
+
+
 global csv_filepath 
 csv_filepath = "/tmp/centreon.csv"
 
