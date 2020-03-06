@@ -262,7 +262,7 @@ def foot1(canvas,doc):
     """Function to put the page number at the end of page"""
     canvas.saveState()
     canvas.setFont('Times-Roman',9)
-    canvas.drawString(width-20*mm, 2*mm, "Page %d" % doc.page)
+    canvas.drawString(width-20*mm, 2*mm, "Page %d %s" % doc.page)
     canvas.restoreState()
 
     
@@ -439,7 +439,7 @@ def build_table_details():
         data_list=[data_df.columns.values.tolist()] + list(subhead) + data_df.values.tolist()
         
         # Generate the table using the list and repeat the headers if necesary
-        table=Table(data=data_list,  repeatRows=2)
+        table=Table(data=data_list,  repeatRows=2,  colWidths = [ '*',  '*',  10*mm,  10*mm,  10*mm,  10*mm,  10*mm,  10*mm, 10*mm,  10*mm,  20*mm,  20*mm] )
 
         # Apply some styles to table and cells
         table.setStyle(styleTable)
@@ -460,7 +460,7 @@ def build_table_details():
         data_list=[data_df.columns.values.tolist()] + list(subhead) + data_df.values.tolist()
         
         # Generate the table using the list and repeat the headers if necesary
-        table=Table(data=data_list,  repeatRows=2)
+        table=Table(data=data_list,  repeatRows=2,  colWidths = [ '*',  12*mm,  12*mm,  12*mm,  12*mm,  12*mm,  12*mm,  20*mm,  20*mm] )
 
         # Apply some styles to table and cells
         table.setStyle(styleTable)
