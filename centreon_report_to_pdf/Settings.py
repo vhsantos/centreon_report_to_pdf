@@ -1,7 +1,13 @@
 # Global variables and parameters
 
-# Path to CSV file
+global csv_filepath 
 csv_filepath = "/tmp/centreon.csv"
 
-# Path to PDF file
+global pdf_output_file
 pdf_output_file = "/tmp/centreon_report.pdf"
+
+global report_type
+report_type = "x"
+
+global report_type_name
+report_type_name = "x"

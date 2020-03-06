@@ -42,7 +42,7 @@ column_total_time = [(1, 0), (1, -1)]
 column_mean_time = [(2, 0), (2, -1)]
 column_alerts = [(3, 0), (3, -1)]
 
-# Columns table details
+# Columns table details_SG
 column_hostname =  [(0, 0), (0, -1)]
 column_service = [(1, 0), (1, -1)]
 column_ok_percent = [(2, 0), (2, -1)]
@@ -53,9 +53,19 @@ column_critical_percent = [(6, 0), (6, -1)]
 column_critical_alerts = [(7, 0), (7, -1)]
 column_unknow_percent = [(8, 0), (8, -1)]
 column_unknow_alerts = [(9, 0), (9, -1)]
-column_scheduled_percent = [(10, 0), (10, -1)]
-column_undetermined_alerts = [(11, 0), (11, -1)]
+column_scheduled_percent_sg = [(10, 0), (10, -1)]
+column_undetermined_alerts_sg = [(11, 0), (11, -1)]
 
+# Columns table details_HG
+column_hostname =  [(0, 0), (0, -1)]
+column_up_percent = [(1, 0), (1, -1)]
+column_up_alerts = [(2, 0), (2, -1)]
+column_down_percent = [(3, 0), (3, -1)]
+column_down_alerts = [(4, 0), (4, -1)]
+column_unrechable_percent = [(5, 0), (5, -1)]
+column_unrechable_alerts = [(6, 0), (6, -1)]
+column_scheduled_percent_hg = [(7, 0), (7, -1)]
+column_undetermined_alerts_hg = [(8, 0), (8, -1)]
 
 
 # Output document
@@ -113,7 +123,7 @@ def stylesheet():
         ]
     )    
 
-    styles['table_details_head'] = TableStyle([
+    styles['table_details_head_SG'] = TableStyle([
             ('SPAN',  (0, 0),  (0, 1)),
             ('SPAN',  (1, 0),  (1, 1)),
             ('SPAN',  (2, 0),  (3, 0)),
@@ -122,9 +132,17 @@ def stylesheet():
             ('SPAN',  (8, 0),  (9, 0)),
         ]
     )    
-    
-    styles['table_details'] = TableStyle([
-            # Columns names 
+
+    styles['table_details_head_HG'] = TableStyle([
+            ('SPAN',  (0, 0),  (0, 1)),
+            ('SPAN',  (1, 0),  (2, 0)),
+            ('SPAN',  (3, 0),  (4, 0)),
+            ('SPAN',  (5, 0),  (6, 0)),
+        ]
+    )    
+
+    styles['table_details_SG'] = TableStyle([
+            ## Columns names 
             #column_hostname =  [(0, 0), (0, -1)]
             #column_service = [(1, 0), (1, -1)]
             #column_ok_percent = [(2, 0), (2, -1)]
@@ -146,19 +164,42 @@ def stylesheet():
             ('BACKGROUND',  (4, 0),  (5, -1),  orange),
             ('BACKGROUND',  (6, 0),  (7, -1),  red),
             ('BACKGROUND',  (8, 0),  (9, -1),  silver),
-            ('BACKGROUND',  column_scheduled_percent[0], column_scheduled_percent[1],  blueviolet),
-            ('BACKGROUND',  column_undetermined_alerts[0],  column_undetermined_alerts[1],  salmon),
+            ('BACKGROUND',  column_scheduled_percent_sg[0], column_scheduled_percent_sg[1],  blueviolet),
+            ('BACKGROUND',  column_undetermined_alerts_sg[0],  column_undetermined_alerts_sg[1],  salmon),
         ]
     )    
     
-    styles['table_resume'] = TableStyle([
+    styles['table_details_HG'] = TableStyle([
+            ## Columns table details_HG
+            #column_hostname =  [(0, 0), (0, -1)]
+            #column_up_percent = [(1, 0), (1, -1)]
+            #column_up_alerts = [(2, 0), (2, -1)]
+            #column_down_percent = [(3, 0), (3, -1)]
+            #column_down_alerts = [(4, 0), (4, -1)]
+            #column_unrechable_percent = [(5, 0), (5, -1)]
+            #column_unrechable_alerts = [(6, 0), (6, -1)]
+            #column_scheduled_percent_hg = [(7, 0), (7, -1)]
+            #column_undetermined_alerts_hg = [(8, 0), (8, -1)]
+            ('GRID', (0,0), (-1,-1),0.5,whitesmoke),
+            ('ALIGN', column_hostname[0], column_hostname[1], 'LEFT'),
+            ('ALIGN', (0, 0),  (0, 1), 'CENTER'),
+            ('ALIGN', (1, 0),  (1, 1), 'CENTER'),
+            ('BACKGROUND',  (1, 0),  (2, -1),  lightgreen),
+            ('BACKGROUND',  (3, 0),  (4, -1),  red),
+            ('BACKGROUND',  (5, 0),  (6, -1),  silver),
+            ('BACKGROUND',  column_scheduled_percent_hg[0], column_scheduled_percent_hg[1],  blueviolet),
+            ('BACKGROUND',  column_undetermined_alerts_hg[0],  column_undetermined_alerts_hg[1],  salmon),
+        ]
+    ) 
+    
+    styles['table_resume_SG'] = TableStyle([
             # Columns names 
             #column_state=  [(0, 0), (0, -1)]
             #column_total_time = [(1, 0), (1, -1)]
             #column_mean_time = [(2, 0), (2, -1)]
             #column_alerts = [(3, 0), (3, -1)]
             ('FONTSIZE', all_cells[0], all_cells[1], 10),
-            ('GRID',(0,0),(-1,-1),0.5,whitesmoke),
+            ('GRID', (0,0), (-1,-1),0.5,whitesmoke),
             ('ALIGN', column_state[0], column_state[1], 'LEFT'),
             ('BACKGROUND',  (0, 0), (-1, 1),  "#eaeaee"),
             ('TEXTCOLOR',  (0, 1),  (0, 1),  green),
@@ -177,14 +218,41 @@ def stylesheet():
         ]
     )
     
+    styles['table_resume_HG'] = TableStyle([
+            # Columns names 
+            #column_state=  [(0, 0), (0, -1)]
+            #column_total_time = [(1, 0), (1, -1)]
+            #column_mean_time = [(2, 0), (2, -1)]
+            #column_alerts = [(3, 0), (3, -1)]
+            ('FONTSIZE', all_cells[0], all_cells[1], 10),
+            ('GRID',(0,0),(-1,-1),0.5,whitesmoke),
+            ('ALIGN', column_state[0], column_state[1], 'LEFT'),
+            ('BACKGROUND',  (0, 0), (-1, 1),  "#eaeaee"),
+            ('TEXTCOLOR',  (0, 1),  (0, 1),  green),
+            ('TEXTCOLOR',  (0, 2),  (0, 2),  red),
+            ('TEXTCOLOR',  (0, 3),  (0, 3),  black),
+            ('TEXTCOLOR',  (0, 4),  (0, 4),  blueviolet),
+            ('TEXTCOLOR',  (0, 5),  (0, 5),  salmon),
+            ('FONTNAME',  (0, 1),  (0, 1),  'Helvetica-Bold'),
+            ('FONTNAME',  (0, 2),  (0, 2),  'Helvetica-Bold'),
+            ('FONTNAME',  (0, 3),  (0, 3),  'Helvetica-Bold'),
+            ('FONTNAME',  (0, 4),  (0, 4),  'Helvetica-Bold'),
+            ('FONTNAME',  (0, 5),  (0, 5),  'Helvetica-Bold'),
+            ('BACKGROUND',  (0,  -1), (-1, -1),  "#eaeaee"),
+        ]
+    )
+
     return styles
 
 styles = stylesheet()
 styleNormal = styles['default']
 styleTable = styles['table_default']
-styleTableDetailsHead = styles['table_details_head']
-styleTableDetails = styles['table_details']
-styleTableResume = styles['table_resume']
+styleTableDetailsHead_SG = styles['table_details_head_SG']
+styleTableDetails_SG = styles['table_details_SG']
+styleTableDetailsHead_HG = styles['table_details_head_HG']
+styleTableDetails_HG = styles['table_details_HG']
+styleTableResume_SG = styles['table_resume_SG']
+styleTableResume_HG = styles['table_resume_HG']
 
 
 ########################################
@@ -194,7 +262,7 @@ def foot1(canvas,doc):
     """Function to put the page number at the end of page"""
     canvas.saveState()
     canvas.setFont('Times-Roman',9)
-    canvas.drawString(width-20*mm, 2*mm, "%d template 1" % doc.page)
+    canvas.drawString(width-20*mm, 2*mm, "Page %d" % doc.page)
     canvas.restoreState()
 
     
@@ -203,7 +271,7 @@ def foot2(canvas,doc):
     """Function to put the page number at the end of page"""
     canvas.saveState()
     canvas.setFont('Times-Roman',9)
-    canvas.drawString(width-20*mm, 2*mm,"%d template 2 " % doc.page)
+    canvas.drawString(width-20*mm, 2*mm,"Page %d" % doc.page)
 
 
 ########################################
@@ -239,7 +307,13 @@ def pie_chart_with_legend():
     pie.direction = 'clockwise'
     
     # define colors of Pie
-    piecolors = [ green,  orange,  red,  silver,  blueviolet,  salmon ]
+    # If SG Report
+    if Settings.report_type == 'ServiceGroup':
+        piecolors = [ green,  orange,  red,  silver,  blueviolet,  salmon ]
+    # If HG Report
+    elif Settings.report_type == 'Hostgroup':
+        piecolors = [ green,  red,  silver,  blueviolet,  salmon ]
+    # Apply colors
     for i, color in enumerate(piecolors): 
         pie.slices[i].fillColor =  color
 
@@ -263,20 +337,6 @@ def build_table_info():
     # Get some defaults styles
     styleSheet = getSampleStyleSheet()
     
-    # Get the type of report
-    report_type = data_df.columns[0]
-    
-    # Get the report type
-    # TODO - maybe we will need it to use at details
-    if report_type == 'ServiceGroup':
-        report_type_name = 'Service Group'
-    elif report_type == 'Hostgroup':
-        report_type_name = 'Host Group'
-    elif report_type == 'Host':
-        report_type_name = 'Host'
-    else:
-        report_type_name = 'NONE'
-    
     # Define style to Title
     title = styleSheet['Title']
     title.fontSize = 12
@@ -284,7 +344,7 @@ def build_table_info():
     title.leading=10
     
     # Add the title
-    contents_title.append(Paragraph(report_type_name + ": " +  str(data_df[report_type][0]), title))
+    contents_title.append(Paragraph(Settings.report_type_name + ": " +  str(data_df[Settings.report_type][0]), title))
 
     # Define style to Text
     text = styleSheet['Normal']
@@ -330,8 +390,17 @@ def build_table_resume():
     
     # Apply some styles to table and cells
     table.setStyle(styleTable)
-    table.setStyle(styleTableResume)
-    
+    # If SG Report
+    if Settings.report_type == 'ServiceGroup':
+        table.setStyle(styleTableResume_SG)
+    # If HG Report
+    elif Settings.report_type == 'Hostgroup':
+            table.setStyle(styleTableResume_HG)
+    else:
+        print ("Can't determinte the type of report to create a table resume.")
+        # Finish  :-(
+        quit()
+
     # Get the number of rows (+1 for two lines headers)
     data_len = len(data_df)  + 1
     
@@ -354,22 +423,55 @@ def build_table_resume():
 # Function to get DETAILS data from CSV, format and create a table
 def build_table_details():
     """Function to get DETAILS data from CSV, format and create a table"""
-    # Get the details data from CSV file
-    data_df=get_centreon_csv_details ()
 
-    # Create a second subhead to table
-    head1=[['', '', '%', 'Alert', '%', 'Alert', '%', 'Alert', '%', 'Alert', 'Downtimes', '%']]
+    # Get the report type
+    # If SG Report
+    if Settings.report_type == 'ServiceGroup':
+        Settings.report_type_name = 'Service Group'
 
-    # Conact the header + sub_header and data to list
-    data_list=[data_df.columns.values.tolist()] + list(head1) + data_df.values.tolist()
+        # Get the details data from CSV file
+        data_df=get_centreon_csv_details_SG ()
+
+        # Create a second subhead to table
+        subhead=[['', '', '%', 'Alert', '%', 'Alert', '%', 'Alert', '%', 'Alert', 'Downtimes', '%']]
+
+        # Conact the header + sub_header and data to list
+        data_list=[data_df.columns.values.tolist()] + list(subhead) + data_df.values.tolist()
+        
+        # Generate the table using the list and repeat the headers if necesary
+        table=Table(data=data_list,  repeatRows=2)
+
+        # Apply some styles to table and cells
+        table.setStyle(styleTable)
+        table.setStyle(styleTableDetailsHead_SG)
+        table.setStyle(styleTableDetails_SG)
+
+    # If HG Report
+    elif Settings.report_type == 'Hostgroup':
+        Settings.report_type_name = 'Host Group'
+
+        # Get the details data from CSV file
+        data_df=get_centreon_csv_details_HG ()
+        
+        # Create a second subhead to table
+        subhead=[['', '%', 'Alert', '%', 'Alert', '%', 'Alert', 'Downtimes', '%']]
+
+        # Conact the header + sub_header and data to list
+        data_list=[data_df.columns.values.tolist()] + list(subhead) + data_df.values.tolist()
+        
+        # Generate the table using the list and repeat the headers if necesary
+        table=Table(data=data_list,  repeatRows=2)
+
+        # Apply some styles to table and cells
+        table.setStyle(styleTable)
+        table.setStyle(styleTableDetailsHead_HG)
+        table.setStyle(styleTableDetails_HG)
     
-    # Generate the table using the list and repeat the headers if necesary
-    table=Table(data=data_list,  repeatRows=2)
-
-    # Apply some styles to table and cells
-    table.setStyle(styleTable)
-    table.setStyle(styleTableDetailsHead)
-    table.setStyle(styleTableDetails)
+    # If None Report
+    else:
+        print ("Can't determinte the type of report to create a table details.")
+        # Finish  :-(
+        quit()
     
     # Get the number of rows (+2 for two lines headers)
     data_len = len(data_df) + 2
@@ -381,8 +483,13 @@ def build_table_details():
             bg_color = whitesmoke
         else:
             bg_color = skyblue
-
-        table.setStyle(TableStyle([('BACKGROUND', (0, each), (1, each), bg_color)]))
+        
+        # If SG change two firsts columns
+        if Settings.report_type == 'ServiceGroup':
+            table.setStyle(TableStyle([('BACKGROUND', (0, each), (1, each), bg_color)]))
+        # If HG change only first columns
+        elif Settings.report_type == 'Hostgroup':
+            table.setStyle(TableStyle([('BACKGROUND', (0, each), (0, each), bg_color)]))
 
     return table
 
@@ -395,7 +502,6 @@ def build_report():
     
     # Define the variable contents
     contents =[]
-#    styleSheet = getSampleStyleSheet()
 
     # Define some Frames to Page 02
     Frame_Graphic = Frame(5*mm, height-80*mm, (width-10*mm)/2, 75*mm,showBoundary = 0)
