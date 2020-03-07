@@ -4,16 +4,16 @@ import os
 import datetime
 from datetime import datetime as dt
 from dateutil.parser import parse
+import requests
 
-
-config = configparser.ConfigParser()
+config = configparser.ConfigParser(allow_no_value=True)
 config.read('config.ini')
 
 # Global variables and parameters
-SG_IDs = []
-HG_IDs = []
+#SG_IDs = []
+#HG_IDs = []
 csv_filepath = "/tmp/centreon.csv"
-pdf_output_file = "/tmp/centreon_report.pdf"
+#pdf_output_file = "/tmp/centreon_report.pdf"
 report_type = "x"
 report_type_name = "x"
 
@@ -26,7 +26,11 @@ def get_HG_IDs_from_config():
     # check if all HG_IDs are integers.
     try:
         hg_list = config.get('REPORTS_ID', 'HostGroups').replace(' ', '').split(',')
-        hg_list = [int(x) for x in hg_list]
+        # Check if values are only integers
+        try:
+            hg_list = [int(x) for x in hg_list]
+        except:
+            return 0
     except:
         print ("Can't get the Host Groups IDs from the configuration file.")
         quit()
@@ -42,12 +46,17 @@ def get_SG_IDs_from_config():
     # check if all HG_IDs are integers.
     try:
         hg_list = config.get('REPORTS_ID', 'ServicesGroups').replace(' ', '').split(',')
-        hg_list = [int(x) for x in hg_list]
+        # Check if values are only integers
+        try:
+            hg_list = [int(x) for x in hg_list]
+        except:
+            return 0
     except:
         print ("Can't get the Services Groups IDs from the configuration file.")
         quit()
         
     return hg_list
+
 
 ########################################
 ########################################
@@ -124,9 +133,9 @@ def get_report_period():
 
 ########################################
 ########################################
-# Generate the URL based on the configuration file
+# Generate the URL to download based on the configuration file
 def prepare_csv_url():
-    """Generate the URL based on the configuration file"""
+    """Generate the URL to download based on the configuration file"""
     # examples of URLs of download CSV
     #https://SERVER_URL/include/reporting/dashboard/csvExport/csv_HostLogs.php?host=55&start=1580785200&end=1583377200
     #https://SERVER_URL/include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?hostgroup=11&start=1583377200&end=1583463600
@@ -149,12 +158,14 @@ def prepare_csv_url():
     URLs = []
     
     # Make URL to Host Groups IDs
-    for h in HG_IDs:
-        URLs.append(server_url + "/include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?hostgroup=" + str(h) + "&start=" + str(Period_Start) + "&end=" + str(Periodo_End))
+    if HG_IDs != 0:
+        for h in HG_IDs:
+            URLs.append(server_url + "/include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?hostgroup=" + str(h) + "&start=" + str(Period_Start) + "&end=" + str(Periodo_End))
 
     # Make URL to Services Groups IDs
-    for s in SG_IDs:
-        URLs.append(server_url + "/include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php?servicegroup=" + str(s) + "&start=" + str(Period_Start) + "&end=" + str(Periodo_End))
+    if SG_IDs != 0:
+        for s in SG_IDs:
+            URLs.append(server_url + "/include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php?servicegroup=" + str(s) + "&start=" + str(Period_Start) + "&end=" + str(Periodo_End))
     
     return URLs
 
@@ -167,7 +178,7 @@ def get_pdf_output_file_path():
     
     # check if pdf_output_file exists configuration file.
     try:
-        pdf_output_file_path= config.get('REPORTS', 'pdf_output_file')
+        pdf_output_file_path= config.get('REPORT', 'pdf_output_file')
         # Get the directory path
         directory = os.path.dirname(pdf_output_file_path)
         
@@ -180,3 +191,81 @@ def get_pdf_output_file_path():
         quit()
     
     return pdf_output_file_path
+
+
+########################################
+########################################
+# Generate the URL to login based on the configuration file
+def prepare_login_url():
+    """Generate the URL to login based on the configuration file"""
+
+    #Example URL Login with autologin
+    # 'https://SERVER_NAME/centreon/main.php?o=c&autologin=1&useralias=USERNAME&token=TOKEN'
+    #Example URL Login with username and password
+    # 'https://SERVER_NAME/centreon/index.php?useralias=USERNAME&password=PASSWORD&submitLogin=Connect'
+
+    # Check if AutoLogin exist
+    try:
+        login_url = config.get('CENTREON_SERVER', 'AutoLogin_URL')
+        return login_url
+    except:
+        pass
+    
+    # If Autologin dont exist, try to get the username and password 
+    try:
+        server = config.get('CENTREON_SERVER', 'Server_URL')
+        user = config.get('CENTREON_SERVER', 'User')
+        passwd = config.get('CENTREON_SERVER', 'Password')
+        
+        login_url = ( server + '/index.php?useralias=' + user + '&password=' + passwd + '&submitLogin=Connect')
+        return login_url
+        
+    # If none is avaliable, exit
+    except:
+        print ("Can't found AutoLogin or Username and Password in the configuration file.")
+        sys.exit()
+
+
+########################################
+########################################
+def download_csv(url_csv):
+    # GET the URL to login
+    LOGIN_URL =  prepare_login_url()
+    
+    # Login and get the session/cookies.
+    centreon_session = requests.session()
+    centreon_session.get(LOGIN_URL)
+    
+    # Download CSV file
+    csv_download = centreon_session.get(url_csv)
+
+    # Check if download was OK (200)
+    if 'undefined' in (csv_download.text):
+        print ('ERROR: Host Group o Service Group ID not found on Centreon server.')
+        sys.exit()
+    elif csv_download.status_code == 200 and 'Bad Session' not in (csv_download.text):
+        # Get the CSV file paht
+        csv_path = get_csv_path()
+        
+        # Write CSV to file
+#        csv_download = centreon_session.get(url_csv)
+        open(csv_path , 'wb').write(csv_download.content)
+    
+    else:
+        print("Can't authenticate on centreon server.")
+        sys.exit()
+
+
+########################################
+########################################
+def get_csv_path():
+        # Try to get the csv path from configuration file
+        try:
+            csv_path = config.get('REPORT', 'csv_download_path')
+        # If not, use a default
+        except:
+            csv_path = '/tmp/centreon.csv'
+            pass
+        
+        return csv_path
+    

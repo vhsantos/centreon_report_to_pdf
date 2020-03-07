@@ -8,15 +8,11 @@ from reportlab.lib.colors import green, lightgreen,  red,  black,  orange,  grey
 from reportlab.graphics.shapes import Drawing
 from reportlab.graphics.charts.piecharts import Pie
 
-#from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import *
 from CentreonData import *
 import Settings
+from Settings import *
 
-
-#from CentreonData import *
-
-#csv_filepath = Settings.csv_filepath
 
 # Variables definitions
 DOCMARGIN = 10*mm
@@ -497,6 +493,9 @@ def build_table_details():
 def prepare_report():
     """Function to build the PDF report with graph and tables"""
     
+    # Get the CSV file paht and use it global
+    Settings.csv_filepath = get_csv_path()
+  
     # Define the variable contents
     contents =[]
 
@@ -569,16 +568,24 @@ def prepare_report():
     return contents
 
 def build_report():
-    print (Settings.SG_ID)
-    print (Settings.VHS)
 
+    # Create a variable to content all story.
     all_contents = []
-    for file in Settings.SG_ID:
-        print (file)
-        Settings.csv_filepath=file
-        all_contents.extend(prepare_report())
-        
+
+    # Create the URL list based on Host Groups(HG) and Service Groups (SG)
+    csv_url = prepare_csv_url()
     
+    # Download the CSV from centreon server
+    for url in csv_url:
+        # Download CSV
+        download_csv(url)
+        
+        # Process the CSV and put the content of this doc in the story
+        all_contents.extend(prepare_report())
+
+    # Build the Document. Finally !!! :D
     doc.build(all_contents)
 
+    # TODO
+    # Store and sendemail
 
