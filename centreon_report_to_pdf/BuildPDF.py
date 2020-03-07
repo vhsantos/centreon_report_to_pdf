@@ -572,6 +572,8 @@ def prepare_report():
     return contents
 
 def build_report():
+    print (Settings.SG_ID)
+    print (Settings.VHS)
 
     all_contents = []
     for file in Settings.SG_ID:

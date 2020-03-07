@@ -1,24 +1,18 @@
 import Settings
-#from CentreonData import *
-from BuildPDF import *
-#from reportlab.lib.units import  mm
-#
-#
-#
-#print (6*mm)
+from Settings import *
+from BuildPDF import build_report
 
-#print (Settings.csv_filepath)
-#print (Settings.csv_filepath)
-#Settings.csv_filepath="/tmp/centreon-report/centreon.csv"
-#print (Settings.csv_filepath)
+prepare_csv_url()
+quit()
 
+Settings.HG_IDs = get_config_HG_IDs()
 
-#Settings.csv_filepath="/tmp/centreon-servicegroup.csv"
-#Settings.csv_filepath="/tmp/centreon-host.csv"
-#Settings.csv_filepath = "/tmp/centreon-hostgroup.csv"
+print (Settings.HG_IDs)
 
-Settings.SG_ID.extend(["/tmp/centreon-hostgroup.csv", "/tmp/centreon-servicegroup.csv",  "/tmp/centreon-report/nuevo-Servicios-GASCO.csv",  "/tmp/centreon-report/hostgroup-GASCO.csv" ])
-print (Settings.SG_ID)
+Settings.SG_IDs = get_config_SG_IDs()
+print (Settings.SG_IDs)
+
+Settings.SG_IDs.extend(["/tmp/centreon-hostgroup.csv", "/tmp/centreon-servicegroup.csv",  "/tmp/centreon-report/nuevo-Servicios-GASCO.csv",  "/tmp/centreon-report/hostgroup-GASCO.csv" ])
 
 
 build_report()

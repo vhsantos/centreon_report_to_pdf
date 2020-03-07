@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project centreon_report_to_pdf -->
-<!-- Saved: 2020-03-05, 13:22:25 -->
+<!-- Saved: 2020-03-07, 17:58:10 -->
 <!-- Copyright (C) 2020 Victor Hugo dos Santos, listas.vhs@gmail.com -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -23,6 +23,7 @@
   </Sources>
   <Others>
     <Other>.gitignore</Other>
+    <Other>centreon_report_to_pdf/config.ini</Other>
   </Others>
   <Vcs>
     <VcsType>Git</VcsType>
