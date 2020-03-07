@@ -16,9 +16,6 @@ import Settings
 
 #from CentreonData import *
 
-
-
-pdf_output_file = Settings.pdf_output_file 
 #csv_filepath = Settings.csv_filepath
 
 # Variables definitions
@@ -70,7 +67,7 @@ column_undetermined_alerts_hg = [(8, 0), (8, -1)]
 
 # Output document
 doc = BaseDocTemplate(
-    pdf_output_file,
+    get_pdf_output_file_path(),
     pagesize=A4, 
     topMargin=DOCMARGIN,
     bottomMargin=DOCMARGIN,
