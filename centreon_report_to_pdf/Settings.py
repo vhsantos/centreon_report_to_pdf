@@ -1,19 +1,23 @@
+#import configparser
+#import sys
+#import os
+#import datetime
+#from datetime import datetime as dt
+#from dateutil.parser import parse
+#import requests
 import configparser
-import sys
-import os
 import datetime
+import os
+import requests
+import sys
 from datetime import datetime as dt
 from dateutil.parser import parse
-import requests
 
 config = configparser.ConfigParser(allow_no_value=True)
 config.read('config.ini')
 
 # Global variables and parameters
-#SG_IDs = []
-#HG_IDs = []
 csv_filepath = "/tmp/centreon.csv"
-#pdf_output_file = "/tmp/centreon_report.pdf"
 report_type = "x"
 report_type_name = "x"
 
@@ -33,7 +37,7 @@ def get_HG_IDs_from_config():
             return 0
     except:
         print ("Can't get the Host Groups IDs from the configuration file.")
-        quit()
+        c()
         
     return hg_list
 
@@ -53,7 +57,7 @@ def get_SG_IDs_from_config():
             return 0
     except:
         print ("Can't get the Services Groups IDs from the configuration file.")
-        quit()
+        sys.exit()()
         
     return hg_list
 
@@ -182,13 +186,22 @@ def get_pdf_output_file_path():
         # Get the directory path
         directory = os.path.dirname(pdf_output_file_path)
         
-        # check if directory exists. If not, create it.
+        # check if path directory exist, if not, create it.
         if not os.path.exists(directory):
-            os.makedirs(directory)
+            try:
+                os.makedirs(directory)
+            except:
+                print ("Can't create directory: " + directory)
+                sys.exit()
+        # If exist, check if it is a directory.
+        else:
+            if os.path.isdir(directory) is not True:
+                print ("Directory path is a file.")
+                sys.exit()
 
     except:
         print ("Can't get the PDF_Output_File from the configuration file.")
-        quit()
+        sys.exit()
     
     return pdf_output_file_path
 

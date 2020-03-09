@@ -1,18 +1,33 @@
-from reportlab.lib.units import  mm
-from reportlab.platypus import BaseDocTemplate,Frame,Paragraph, PageTemplate,FrameBreak,NextPageTemplate
-from reportlab.lib.styles import ParagraphStyle,  getSampleStyleSheet
+#from reportlab.lib.units import  mm
+#from reportlab.platypus import BaseDocTemplate,Frame,Paragraph, PageTemplate,FrameBreak,NextPageTemplate
+#from reportlab.lib.styles import ParagraphStyle,  getSampleStyleSheet
+#from reportlab.lib.enums import TA_LEFT,  TA_CENTER
+#from reportlab.lib.pagesizes import A4
+#from reportlab.lib.colors import green, lightgreen,  red,  black,  orange,  grey,  blueviolet,  silver, salmon, whitesmoke
+#
+#from reportlab.graphics.shapes import Drawing
+#from reportlab.graphics.charts.piecharts import Pie
+#
+#from reportlab.platypus import *
+#from CentreonData import *
+#import Settings
+#from Settings import *
+
+from CentreonData import *
+
+from reportlab.graphics.charts.piecharts import Pie
+from reportlab.graphics.shapes import Drawing
+from reportlab.lib.colors import green, lightgreen,  red,  black,  orange,  grey,  blueviolet,  silver, salmon, whitesmoke
 from reportlab.lib.enums import TA_LEFT,  TA_CENTER
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.colors import green, lightgreen,  red,  black,  orange,  grey,  blueviolet,  silver, salmon, whitesmoke
-
-from reportlab.graphics.shapes import Drawing
-from reportlab.graphics.charts.piecharts import Pie
-
+from reportlab.lib.styles import ParagraphStyle,  getSampleStyleSheet
+from reportlab.lib.units import  mm
 from reportlab.platypus import *
-from CentreonData import *
+from reportlab.platypus import BaseDocTemplate,Frame,Paragraph, PageTemplate,FrameBreak,NextPageTemplate
+
+import sys
 import Settings
 from Settings import *
-
 
 # Variables definitions
 DOCMARGIN = 10*mm
@@ -392,7 +407,7 @@ def build_table_resume():
     else:
         print ("Can't determinte the type of report to create a table resume.")
         # Finish  :-(
-        quit()
+        sys.exit()()
 
     # Get the number of rows (+1 for two lines headers)
     data_len = len(data_df)  + 1
@@ -464,7 +479,7 @@ def build_table_details():
     else:
         print ("Can't determinte the type of report to create a table details.")
         # Finish  :-(
-        quit()
+        sys.exit()()
     
     # Get the number of rows (+2 for two lines headers)
     data_len = len(data_df) + 2
@@ -567,6 +582,8 @@ def prepare_report():
 
     return contents
 
+########################################
+########################################  
 def build_report():
 
     # Create a variable to content all story.
@@ -588,4 +605,3 @@ def build_report():
 
     # TODO
     # Store and sendemail
-
