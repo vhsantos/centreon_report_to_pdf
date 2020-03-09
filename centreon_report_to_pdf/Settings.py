@@ -37,7 +37,7 @@ def get_HG_IDs_from_config():
             return 0
     except:
         print ("Can't get the Host Groups IDs from the configuration file.")
-        c()
+        sys.exit()
         
     return hg_list
 
@@ -57,7 +57,7 @@ def get_SG_IDs_from_config():
             return 0
     except:
         print ("Can't get the Services Groups IDs from the configuration file.")
-        sys.exit()()
+        sys.exit()
         
     return hg_list
 
