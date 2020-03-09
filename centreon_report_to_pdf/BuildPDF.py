@@ -1,18 +1,3 @@
-#from reportlab.lib.units import  mm
-#from reportlab.platypus import BaseDocTemplate,Frame,Paragraph, PageTemplate,FrameBreak,NextPageTemplate
-#from reportlab.lib.styles import ParagraphStyle,  getSampleStyleSheet
-#from reportlab.lib.enums import TA_LEFT,  TA_CENTER
-#from reportlab.lib.pagesizes import A4
-#from reportlab.lib.colors import green, lightgreen,  red,  black,  orange,  grey,  blueviolet,  silver, salmon, whitesmoke
-#
-#from reportlab.graphics.shapes import Drawing
-#from reportlab.graphics.charts.piecharts import Pie
-#
-#from reportlab.platypus import *
-#from CentreonData import *
-#import Settings
-#from Settings import *
-
 from CentreonData import *
 
 from reportlab.graphics.charts.piecharts import Pie
