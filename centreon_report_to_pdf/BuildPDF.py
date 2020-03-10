@@ -9,7 +9,7 @@ from reportlab.lib.styles import ParagraphStyle,  getSampleStyleSheet
 from reportlab.lib.units import  mm
 from reportlab.platypus import *
 from reportlab.platypus import BaseDocTemplate,Frame,Paragraph, PageTemplate,FrameBreak,NextPageTemplate
-
+from Settings import * 
 import sys
 
 # Variables definitions

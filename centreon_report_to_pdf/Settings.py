@@ -311,7 +311,7 @@ def get_command_line_args():
     """Create a list of arguments to command line."""
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', action='store',  dest='config_file',  default='config.ini',  help='Configuration file (default = config.ini)')
-    parser.add_argument('-o', '--pdf_output', action='store',  dest='pdf_output_file',  default='centreon_report.pdf',  help='PDF file path (default = centreon_report.pdf)')
+    parser.add_argument('-o', '--pdf_output', action='store',  dest='pdf_output_file',  help='PDF file path (default = centreon_report.pdf)')
     parser.add_argument('-p', '--period', action='store',  dest='period',  help='Time Period (default = yesterday)')
     parser.add_argument('--custom_period_start', action='store',  dest='custom_period_start',   help='Custom time period start')
     parser.add_argument('--custom_period_end', action='store',  dest='custom_period_end',   help='Custom time period end')
