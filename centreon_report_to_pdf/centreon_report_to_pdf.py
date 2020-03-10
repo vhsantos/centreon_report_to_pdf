@@ -1,12 +1,12 @@
-from Settings import *
+from Settings import get_command_line_args
 from BuildPDF import build_report
 
 
 if __name__== "__main__":
-
+    
+    # Get and set options in base to configuration file or command line arguments.
     get_command_line_args()
-#    
-#    sys.exit()
+
     
     build_report()
 
