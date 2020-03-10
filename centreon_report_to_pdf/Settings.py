@@ -1,3 +1,4 @@
+import argparse
 import configparser
 import datetime
 import os
@@ -5,14 +6,8 @@ import requests
 import sys
 from datetime import datetime as dt
 from dateutil.parser import parse
+import GlobalVars 
 
-config = configparser.ConfigParser(allow_no_value=True)
-config.read('config.ini')
-
-# Global variables and parameters
-csv_filepath = "/tmp/centreon.csv"
-report_type = "x"
-report_type_name = "x"
 
 
 ########################################
@@ -27,7 +22,7 @@ def get_HG_IDs_from_config():
         try:
             hg_list = [int(x) for x in hg_list]
         except:
-            return 0
+            return [0]
     except:
         print ("Can't get the Host Groups IDs from the configuration file.")
         sys.exit()
@@ -47,7 +42,7 @@ def get_SG_IDs_from_config():
         try:
             hg_list = [int(x) for x in hg_list]
         except:
-            return 0
+            return [0]
     except:
         print ("Can't get the Services Groups IDs from the configuration file.")
         sys.exit()
@@ -61,12 +56,10 @@ def get_SG_IDs_from_config():
 def get_report_period():
     """Function to get the period from configuration file and convert dates to timestamps."""
     
-    # Check if period is defined on configuration file.
-    try:
-        period = config.get('REPORT', 'period')
-    except:
-        print ("INFO: Can't determinte the period. Using yesterday")
-        period = "yesterday"
+
+    period = GlobalVars.period
+    custom_period_start = GlobalVars.custom_period_start
+    custom_period_end= GlobalVars.custom_period_end
     
     # Get the actual date/time.
     now = dt.now()
@@ -103,23 +96,25 @@ def get_report_period():
         end_date = now.replace(day=1, month=1 )
 
     elif period == "custom":
-        try:
-            # Get the custom dates from configuration file.
-            perido_start = config.get('REPORT', 'custom_period_start')
-            perido_end= config.get('REPORT', 'custom_period_end')
-            
-            # check if the dates are valid.
-            try:
-                start_date = parse(perido_start)
-                end_date = parse(perido_end)
-                
-            except:
-                print ("ERROR: Invalid custom period dates.")
-                sys.exit()
-                
-        except configparser.NoOptionError:
-            print ("ERROR: Period_Start or Period_End invalid(s)")
-            sys.exit()
+        start_date = custom_period_start
+        end_date = custom_period_end
+#        try:
+#            # Get the custom dates from configuration file.
+#            perido_start = config.get('REPORT', 'custom_period_start')
+#            perido_end= config.get('REPORT', 'custom_period_end')
+#            
+#            # check if the dates are valid.
+#            try:
+#                start_date = parse(perido_start)
+#                end_date = parse(perido_end)
+#                
+#            except:
+#                print ("ERROR: Invalid custom period dates.")
+#                sys.exit()
+#                
+#        except configparser.NoOptionError:
+#            print ("ERROR: Period_Start or Period_End invalid(s)")
+#            sys.exit()
     
     # Convert dates to integer/timestamps
     start_date = int(start_date.replace(hour=0, minute=0, second=0, microsecond=0).timestamp())
@@ -147,21 +142,21 @@ def prepare_csv_url():
         print ("ERROR: Can't find server_url on configuration file.")
         sys.exit()
 
-    # Get the list of Host Groups, Services Groups and periods from configuration file.
-    HG_IDs = get_HG_IDs_from_config()
-    SG_IDs = get_SG_IDs_from_config()
+    # Get the periods from configuration file.
     (Period_Start,  Periodo_End) = get_report_period()
 
     URLs = []
     
     # Make URL to Host Groups IDs
-    if HG_IDs != 0:
-        for h in HG_IDs:
+    for h in GlobalVars.final_HGs:
+        # Not if it is empty
+        if h != 0:
             URLs.append(server_url + "/include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?hostgroup=" + str(h) + "&start=" + str(Period_Start) + "&end=" + str(Periodo_End))
 
     # Make URL to Services Groups IDs
-    if SG_IDs != 0:
-        for s in SG_IDs:
+    for s in GlobalVars.final_SGs:
+        # Not if it is empty
+        if s != 0:
             URLs.append(server_url + "/include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php?servicegroup=" + str(s) + "&start=" + str(Period_Start) + "&end=" + str(Periodo_End))
     
     return URLs
@@ -275,3 +270,113 @@ def get_csv_path():
         
         return csv_path
     
+
+#
+#def_config_file = 'config.ini'
+#def_HGs = get_HG_IDs_from_config()
+
+def get_command_line_args():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config', action='store',  dest='config_file',  default='config.ini',  help='Configuration file (default = config.ini)')
+    parser.add_argument('-o', '--pdf_output', action='store',  dest='pdf_output_file',  default='centreon_report.pdf',  help='PDF file path (default = centreon_report.pdf)')
+    parser.add_argument('-p', '--period', action='store',  dest='period',  help='Time Period (default = yesterday)')
+    parser.add_argument('--custom_period_start', action='store',  dest='custom_period_start',   help='Custom time period start')
+    parser.add_argument('--custom_period_end', action='store',  dest='custom_period_end',   help='Custom time period end')
+    parser.add_argument('-H', '--hostgroup', action='append', dest='HG_ID',  default= [], type=int,   help='Hosts Groups IDs (can be used multiples times)')
+    parser.add_argument('-S', '--servicegroup', action='append', dest='SG_ID',  default= [], type=int, help='Services Groups IDs (can be used multiples times)')
+
+    argvs = parser.parse_args()
+    
+#    argvs_config_file = argvs.config_file
+#    argvs_HGs =  argvs.HG_ID
+    global config
+    config = configparser.ConfigParser(allow_no_value=True)
+    final_config_file = argvs.config_file #if argvs_config_file else def_config_file
+    config.read(final_config_file)
+    
+    def_HGs = get_HG_IDs_from_config()
+    argvs_HGs =  argvs.HG_ID
+    GlobalVars.final_HGs = argvs_HGs if argvs_HGs else def_HGs
+    
+    def_SGs = get_SG_IDs_from_config()
+    argvs_SGs =  argvs.SG_ID
+    GlobalVars.final_SGs = argvs_SGs if argvs_SGs else def_SGs
+
+    def_pdf_output_file_path = get_pdf_output_file_path()
+    argvs_pdf_output_file_path = argvs.pdf_output_file
+    GlobalVars.pdf_output_file_path = argvs_pdf_output_file_path if argvs_pdf_output_file_path else def_pdf_output_file_path
+    
+
+    # Check if period is defined on configuration file.
+    try:
+        def_period = config.get('REPORT', 'period')
+    except:
+        print ("INFO: Can't determinte the period. Using yesterday")
+        def_period = "yesterday"
+        pass
+
+    argvs_period = argvs.period
+    GlobalVars.period = argvs_period if argvs_period else def_period
+    print (GlobalVars.period)
+
+    def_custom_period_start = None
+    def_custom_period_end = None 
+    argvs_custom_period_start = None
+    argvs_custom_period_end = None
+    
+    if def_period == "custom":
+        try:
+            # Get the custom dates from configuration file.
+            def_custom_period_start = config.get('REPORT', 'custom_period_start')
+            def_custom_period_end= config.get('REPORT', 'custom_period_end')
+            
+            # check if the dates are valid.
+            try:
+                def_custom_period_start = parse(def_custom_period_start)
+                def_custom_period_end = parse(def_custom_period_end)
+                
+            except:
+                print ("ERROR: Invalid custom period dates.")
+                sys.exit()
+
+        except configparser.NoOptionError:
+            print ("ERROR: Period_Start or Period_End invalid(s)")
+            sys.exit()
+
+
+    
+    if argvs.period == "custom":
+        try:
+            argvs_custom_period_start = argvs.custom_period_start
+            argvs_custom_period_end = argvs.custom_period_end
+            
+            try:
+                argvs_custom_period_start = parse(argvs_custom_period_start)
+                argvs_custom_period_end = parse(argvs_custom_period_end)
+
+            except:
+                print ("ERROR: Invalid custom period dates.")
+                sys.exit()
+    
+        except:
+            print ("ERROR: Period_Start or Period_End invalid(s)")
+            sys.exit()
+        
+        
+    GlobalVars.custom_period_start = argvs_custom_period_start if argvs_custom_period_start else def_custom_period_start
+    GlobalVars.custom_period_end = argvs_custom_period_end if argvs_custom_period_end else def_custom_period_end
+
+
+
+
+
+
+    print (final_config_file)
+    print (GlobalVars.final_HGs)
+    print (GlobalVars.final_SGs)
+#
+#    args = parser.parse_args()
+#    print (args.config_file)
+#    sys.exit()
+

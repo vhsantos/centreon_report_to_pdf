@@ -1,16 +1,14 @@
+from Settings import *
+import GlobalVars
 from BuildPDF import build_report
-import argparse
-import sys
 
-parser = argparse.ArgumentParser()
-parser.add_argument("config_file", help="Configuration file (default = config.ini)")
-parser.add_argument("-v", "--verbosity", help="increase output verbosity")
-
-args = parser.parse_args()
-print (args.config_file)
-sys.exit()
 
 if __name__== "__main__":
+
+    get_command_line_args()
+#    
+#    sys.exit()
+    
     build_report()
 
 

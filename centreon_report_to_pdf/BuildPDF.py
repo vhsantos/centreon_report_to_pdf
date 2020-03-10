@@ -60,17 +60,17 @@ column_unrechable_alerts = [(6, 0), (6, -1)]
 column_scheduled_percent_hg = [(7, 0), (7, -1)]
 column_undetermined_alerts_hg = [(8, 0), (8, -1)]
 
-
-# Output document
-doc = BaseDocTemplate(
-    get_pdf_output_file_path(),
-    pagesize=A4, 
-    topMargin=DOCMARGIN,
-    bottomMargin=DOCMARGIN,
-    leftMargin=DOCMARGIN, 
-    rightMargin=DOCMARGIN,
-    showBoundary=1, 
-)
+doc = None
+## Output document
+#doc = BaseDocTemplate(
+#    get_pdf_output_file_path(),
+#    pagesize=A4, 
+#    topMargin=DOCMARGIN,
+#    bottomMargin=DOCMARGIN,
+#    leftMargin=DOCMARGIN, 
+#    rightMargin=DOCMARGIN,
+#    showBoundary=1, 
+#)
 
 ########################################
 ########################################  
@@ -570,6 +570,19 @@ def prepare_report():
 ########################################
 ########################################  
 def build_report():
+    
+    global doc
+    
+        # Output document
+    doc = BaseDocTemplate(
+        GlobalVars.pdf_output_file_path,
+        pagesize=A4, 
+        topMargin=DOCMARGIN,
+        bottomMargin=DOCMARGIN,
+        leftMargin=DOCMARGIN, 
+        rightMargin=DOCMARGIN,
+        showBoundary=1, 
+    )
 
     # Create a variable to content all story.
     all_contents = []
