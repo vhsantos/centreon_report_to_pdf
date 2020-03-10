@@ -50,6 +50,11 @@ To obtain the list of Hosts and Services Groups from centreon, you can use the [
 - To get all the **[Services Groups IDs](https://documentation.centreon.com/docs/centreon/en/latest/api/clapi/objects/service_groups.html)**
 ```/usr/share/centreon/bin/centreon -u USERNAME -p PASSWORD -o SG -a show```
 
+
+### Report Example
+[centreon_report.pdf](http://downloads.vhsantos.net/centreon_report.pdf)
+
+
 ### TODO
  - Add more arguments options
  - Add option to sent PDF by email
