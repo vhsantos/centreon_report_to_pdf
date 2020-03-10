@@ -301,10 +301,10 @@ def pie_chart_with_legend():
     
     # define colors of Pie
     # If SG Report
-    if Settings.report_type == 'ServiceGroup':
+    if GlobalVars.report_type == 'ServiceGroup':
         piecolors = [ green,  orange,  red,  silver,  blueviolet,  salmon ]
     # If HG Report
-    elif Settings.report_type == 'Hostgroup':
+    elif GlobalVars.report_type == 'Hostgroup':
         piecolors = [ green,  red,  silver,  blueviolet,  salmon ]
     # Apply colors
     for i, color in enumerate(piecolors): 
@@ -337,7 +337,7 @@ def build_table_info():
     title.leading=10
     
     # Add the title
-    contents_title.append(Paragraph(Settings.report_type_name + ": " +  str(data_df[Settings.report_type][0]), title))
+    contents_title.append(Paragraph(GlobalVars.report_type_name + ": " +  str(data_df[GlobalVars.report_type][0]), title))
 
     # Define style to Text
     text = styleSheet['Normal']
@@ -384,10 +384,10 @@ def build_table_resume():
     # Apply some styles to table and cells
     table.setStyle(styleTable)
     # If SG Report
-    if Settings.report_type == 'ServiceGroup':
+    if GlobalVars.report_type == 'ServiceGroup':
         table.setStyle(styleTableResume_SG)
     # If HG Report
-    elif Settings.report_type == 'Hostgroup':
+    elif GlobalVars.report_type == 'Hostgroup':
             table.setStyle(styleTableResume_HG)
     else:
         print ("Can't determinte the type of report to create a table resume.")
@@ -419,8 +419,8 @@ def build_table_details():
 
     # Get the report type
     # If SG Report
-    if Settings.report_type == 'ServiceGroup':
-        Settings.report_type_name = 'Service Group'
+    if GlobalVars.report_type == 'ServiceGroup':
+        GlobalVars.report_type_name = 'Service Group'
 
         # Get the details data from CSV file
         data_df=get_centreon_csv_details_SG ()
@@ -440,8 +440,8 @@ def build_table_details():
         table.setStyle(styleTableDetails_SG)
 
     # If HG Report
-    elif Settings.report_type == 'Hostgroup':
-        Settings.report_type_name = 'Host Group'
+    elif GlobalVars.report_type == 'Hostgroup':
+        GlobalVars.report_type_name = 'Host Group'
 
         # Get the details data from CSV file
         data_df=get_centreon_csv_details_HG ()
@@ -478,10 +478,10 @@ def build_table_details():
             bg_color = skyblue
         
         # If SG change two firsts columns
-        if Settings.report_type == 'ServiceGroup':
+        if GlobalVars.report_type == 'ServiceGroup':
             table.setStyle(TableStyle([('BACKGROUND', (0, each), (1, each), bg_color)]))
         # If HG change only first columns
-        elif Settings.report_type == 'Hostgroup':
+        elif GlobalVars.report_type == 'Hostgroup':
             table.setStyle(TableStyle([('BACKGROUND', (0, each), (0, each), bg_color)]))
 
     return table
@@ -494,7 +494,7 @@ def prepare_report():
     """Function to build the PDF report with graph and tables"""
     
     # Get the CSV file paht and use it global
-    Settings.csv_filepath = get_csv_path()
+    GlobalVars.csv_filepath = get_csv_path()
   
     # Define the variable contents
     contents =[]
@@ -575,7 +575,7 @@ def build_report():
     
         # Output document
     doc = BaseDocTemplate(
-        GlobalVars.pdf_output_file_path,
+        GlobalVars.pdf_output_file,
         pagesize=A4, 
         topMargin=DOCMARGIN,
         bottomMargin=DOCMARGIN,
