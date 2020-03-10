@@ -351,7 +351,6 @@ def get_command_line_args():
     default_period = get_period_from_config()
     args_period = args.period
     GlobalVars.period = args_period if args_period else default_period
-    print (GlobalVars.period)
 
     # Custom Period
     default_custom_period_start = None

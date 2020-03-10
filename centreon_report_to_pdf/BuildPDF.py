@@ -11,8 +11,6 @@ from reportlab.platypus import *
 from reportlab.platypus import BaseDocTemplate,Frame,Paragraph, PageTemplate,FrameBreak,NextPageTemplate
 
 import sys
-import Settings
-from Settings import *
 
 # Variables definitions
 DOCMARGIN = 10*mm
@@ -493,8 +491,8 @@ def build_table_details():
 def prepare_report():
     """Function to build the PDF report with graph and tables"""
     
-    # Get the CSV file paht and use it global
-    GlobalVars.csv_filepath = get_csv_path()
+#    # Get the CSV file paht and use it global
+#    GlobalVars.csv_filepath = get_csv_path()
   
     # Define the variable contents
     contents =[]

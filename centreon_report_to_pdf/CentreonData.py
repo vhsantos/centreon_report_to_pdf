@@ -1,5 +1,5 @@
 import pandas as pd
-import Settings
+import GlobalVars
 
 # Function to get the two first lines from centreon CSV
 # data example:
@@ -10,7 +10,7 @@ def get_centreon_csv_info ():
     
     # Read the CSV File
     # Conserver "begin date" and "end date" to datetime64 
-    csv_info = pd.read_csv (Settings.csv_filepath,  sep=";",  nrows=1, parse_dates=[1, 2] ,  dayfirst=True)
+    csv_info = pd.read_csv (GlobalVars.csv_download_filepath,  sep=";",  nrows=1, parse_dates=[1, 2] ,  dayfirst=True)
     
     return csv_info
 
@@ -31,17 +31,17 @@ def get_centreon_csv_resume ():
     """Function to get the information resumen from centreon CSV between lines 5-11"""
     
     # Define columns to be used
-    if Settings.report_type == 'ServiceGroup':
+    if GlobalVars.report_type == 'ServiceGroup':
         PD_NROWS = 6
         PD_SKIPROWS=4
         PD_USECOLS=["Status", "Total Time",   "Mean Time",  "Alert"]
-    elif Settings.report_type == 'Hostgroup':
+    elif GlobalVars.report_type == 'Hostgroup':
         PD_NROWS = 5
         PD_SKIPROWS=3
         PD_USECOLS=["Status", "Total Time",   "Mean Time",  " Alert"]
 
     # Read the CSV File
-    csv_resume = pd.read_csv (Settings.csv_filepath,  sep=";",  nrows=PD_NROWS,  skiprows=PD_SKIPROWS,  usecols=PD_USECOLS)
+    csv_resume = pd.read_csv (GlobalVars.csv_download_filepath,  sep=";",  nrows=PD_NROWS,  skiprows=PD_SKIPROWS,  usecols=PD_USECOLS)
 
     # Rename columns names that will be in the PDF
     csv_resume.columns = ["Status",  "Total Time",  "Mean Time",  "Alerts"]
@@ -87,7 +87,7 @@ def get_centreon_csv_details_HG ():
 
     # read the CSV file after line 15 where the headers start
     # Force dtype to "Unknown Alert" - BUG :-(
-    csv_details = pd.read_csv (Settings.csv_filepath,  sep=";",  skiprows=11, skip_blank_lines=False,  usecols=COLUMN_DATA,  dtype={"Unknown Alert":'str'})
+    csv_details = pd.read_csv (GlobalVars.csv_download_filepath,  sep=";",  skiprows=11, skip_blank_lines=False,  usecols=COLUMN_DATA,  dtype={"Unknown Alert":'str'})
     
     # check by blank lines
     try:
@@ -135,7 +135,7 @@ def get_centreon_csv_details_SG ():
 
     # read the CSV file after line 15 where the headers start
     # Force dtype to "Unknown Alert" - BUG :-(
-    csv_details = pd.read_csv (Settings.csv_filepath,  sep=";",  skiprows=14, skip_blank_lines=False,  usecols=COLUMN_DATA,  dtype={"Unknown Alert":'str'})
+    csv_details = pd.read_csv (GlobalVars.csv_download_filepath,  sep=";",  skiprows=14, skip_blank_lines=False,  usecols=COLUMN_DATA,  dtype={"Unknown Alert":'str'})
     
     # check by blank lines
     try:
@@ -171,15 +171,15 @@ def get_centreon_report_type():
     data_df=get_centreon_csv_info()
 
     # Get the content of first field on CSV
-    Settings.report_type = data_df.columns[0]
+    GlobalVars.report_type = data_df.columns[0]
     
     # Get the report type
-    if Settings.report_type == 'ServiceGroup':
-        Settings.report_type_name = 'Service Group'
-    elif Settings.report_type == 'Hostgroup':
-        Settings.report_type_name = 'Host Group'
-    elif Settings.report_type == 'Host':
-        Settings.report_type_name = 'Host'
+    if GlobalVars.report_type == 'ServiceGroup':
+        GlobalVars.report_type_name = 'Service Group'
+    elif GlobalVars.report_type == 'Hostgroup':
+        GlobalVars.report_type_name = 'Host Group'
+    elif GlobalVars.report_type == 'Host':
+        GlobalVars.report_type_name = 'Host'
     else:
         print ("Can't determinte the type of report on the CSV.")
         # Finish  :-(
