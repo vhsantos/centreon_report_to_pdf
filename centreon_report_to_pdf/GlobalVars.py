@@ -11,7 +11,6 @@ period='yesterday'
 custom_period_start = None
 custom_period_end = None
 pdf_output_file = 'centreon_report.pdf'
-pdf_output_email = None
 csv_download_filepath = '/tmp/centreon.csv'
 
 #[REPORTS_ID]
