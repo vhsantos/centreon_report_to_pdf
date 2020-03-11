@@ -202,18 +202,19 @@ def get_pdf_output_file_from_config():
         # Get the directory path
         directory = os.path.dirname(pdf_output_file_path)
         
-        # check if path directory exist, if not, create it.
-        if not os.path.exists(directory):
-            try:
-                os.makedirs(directory)
-            except:
-                print ("Can't create directory: " + directory)
-                sys.exit()
-        # If exist, check if it is a directory.
-        else:
-            if os.path.isdir(directory) is not True:
-                print ("Directory path is a file.")
-                sys.exit()
+        if directory != "":
+            # check if path directory exist, if not, create it.
+            if not os.path.exists(directory):
+                try:
+                    os.makedirs(directory)
+                except:
+                    print ("Can't create directory: " + directory)
+                    sys.exit()
+            # If exist, check if it is a directory.
+            else:
+                if os.path.isdir(directory) is not True:
+                    print ("Directory path is a file.")
+                    sys.exit()
 
     except:
         print ("Can't get the PDF_Output_File from the configuration file.")
