@@ -159,6 +159,11 @@ def get_smtp_parameters_from_config():
         GlobalVars.email_server = config.get('SMTP', 'email_server')
     except:
         pass
+        
+    try:
+        GlobalVars.email_ssl_or_tls = config.get('SMTP', 'email_ssl_or_tls')
+    except:
+        pass
 
     try:
         GlobalVars.email_port = config.getint('SMTP', 'email_port')
