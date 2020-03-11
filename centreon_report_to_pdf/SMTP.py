@@ -5,7 +5,7 @@ import GlobalVars
 import sys
 
 def sent_pdf_by_email():
-
+    
     email_from = GlobalVars.email_from 
     email_to = GlobalVars.email_to
     email_subject = GlobalVars.email_subject 
