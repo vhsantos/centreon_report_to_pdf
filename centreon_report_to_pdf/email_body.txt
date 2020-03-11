@@ -1,0 +1,9 @@
+Hello There,
+
+Attached the Centreon Monitoring Report.
+Hopping that the uptimes are better than before.
+
+Sincerely,
+
+	Your friendly monitoring system service.
+

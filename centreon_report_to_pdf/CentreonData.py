@@ -101,7 +101,7 @@ def get_centreon_csv_details_HG ():
         
     # Clean trash (% or spaces) at numerics columns
     for col_name in COLUMN_DATA:
-        if col_name != "Host" or col_name != "Service":
+        if col_name != "Hosts" and col_name != "Service":
             csv_details[col_name] = csv_details[col_name].astype(str).str.replace('%', '')
             csv_details[col_name] = csv_details[col_name].astype(str).str.replace(' ', '')
 
@@ -149,7 +149,7 @@ def get_centreon_csv_details_SG ():
         
     # Clean trash (% or spaces) at numerics columns
     for col_name in COLUMN_DATA:
-        if col_name != "Host" or col_name != "Service":
+        if col_name != "Host" and col_name != "Service":
             csv_details[col_name] = csv_details[col_name].astype(str).str.replace('%', '')
             csv_details[col_name] = csv_details[col_name].astype(str).str.replace(' ', '')
 

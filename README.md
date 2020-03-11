@@ -12,7 +12,7 @@ Basically, it connect to [centron](https://www.centreon.com/en/) using an autolo
 * Install the dependencies.
 ```
 cd centreon_report_to_pdf
-pip -r requriments.txt
+pip install -r requirements.txt
 ```
 
 ### Usage
