@@ -18,14 +18,15 @@ csv_download_filepath = '/tmp/centreon.csv'
 hosts_groups = [0]
 services_groups = [0]
 
+#[SMTP]
+send_pdf_by_email =  False
+email_from = None
+email_to = None
+email_subject = 'Centreon PDF Report'
+email_body_txt_file = 'email_body.txt'
+email_server = 'localhost'
+email_port = 25
+email_authentication = False
+email_username = None
+email_password = None
 
-#
-#csv_filepath = '/tmp/centreon.csv'
-#report_type = None
-#report_type_name = None
-#final_HGs = [0]
-#final_SGs = [0]
-#pdf_output_file_path = None
-#period = 'yesterday'
-#custom_period_start = None
-#custom_period_end = None

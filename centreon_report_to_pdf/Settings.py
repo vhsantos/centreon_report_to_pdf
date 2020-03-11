@@ -2,6 +2,7 @@ import argparse
 import configparser
 import datetime
 import os
+import re
 import requests
 import sys
 from datetime import datetime as dt
@@ -110,6 +111,82 @@ def get_server_url_from_config():
 
 ########################################
 ########################################
+# Get SMTP parameters from configuration file.
+def get_smtp_parameters_from_config():        
+    """Get SMTP parameters from configuration file."""
+    
+    # Get from 
+    try:
+        GlobalVars.email_from = config.get('SMTP', 'email_from')
+        
+        # strip any space at the begin or end 
+        GlobalVars.email_from  = str(GlobalVars.email_from.strip())
+        
+        if check_mail_syntax (GlobalVars.email_from) is False:
+            sys.exit()
+    
+    except:
+        print ("ERROR: Can't get the email From or it is invalid.")
+        sys.exit()
+
+    # Get To 
+    try:
+        GlobalVars.email_to = config.get('SMTP', 'email_to').split(',')
+        
+        # strip any space at the begin or end 
+        GlobalVars.email_to = [str(t).strip() for t in GlobalVars.email_to]
+        
+        for e in GlobalVars.email_to:
+            if check_mail_syntax (e) is False:
+                sys.exit()
+    
+    except:
+        print ("ERROR: Can't get the email To or it is invalid.")
+        sys.exit()
+
+    # Get some default values
+    try:
+        GlobalVars.email_subject = config.get('SMTP', 'email_subject')
+    except:
+        pass
+
+    try:
+        GlobalVars.email_body_txt_file = config.get('SMTP', 'email_body_txt_file')
+    except:
+        pass
+
+    try:
+        GlobalVars.email_server = config.get('SMTP', 'email_server')
+    except:
+        pass
+
+    try:
+        GlobalVars.email_port = config.getint('SMTP', 'email_port')
+    except:
+        pass
+
+    try:
+        GlobalVars.email_authentication = config.getboolean('SMTP', 'email_authentication')
+    except:
+        pass
+
+    # Check by username and password if authentication is enable
+    if GlobalVars.email_authentication is True:
+        try:
+            GlobalVars.email_username = config.get('SMTP', 'email_username')
+            GlobalVars.email_password = config.get('SMTP', 'email_password')
+            
+            # check if username or password are not configured.
+            if GlobalVars.email_username is None or GlobalVars.email_password is None  or len(GlobalVars.email_username ) == 0 or len(GlobalVars.email_password) == 0:
+                sys.exit()
+        
+        except:
+            print ("ERROR: Can't get username or password to authentication on configuration file.")
+            sys.exit()
+
+
+########################################
+########################################
 # Get the pdf_output_file from configuration file.
 def get_pdf_output_file_from_config():
     """Get the pdf_output_file from configuration file."""
@@ -138,6 +215,22 @@ def get_pdf_output_file_from_config():
         sys.exit()
     
     return pdf_output_file_path
+
+
+########################################
+########################################
+# Simples function for validating an Email address
+def check_mail_syntax(email):
+    """Simples function for validating an Email address"""
+    
+    # Make a regular expression  for validating an Email 
+    regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    
+    # pass the regualar expression and the string in search() method 
+    if(re.search(regex,email)):  
+        return True
+    else:
+        return False
 
 
 ########################################
@@ -317,6 +410,7 @@ def get_command_line_args():
     parser.add_argument('--custom_period_end', action='store',  dest='custom_period_end',   help='Custom time period end')
     parser.add_argument('-H', '--hostgroup', action='append', dest='HG_ID',  default= [], type=int,   help='Hosts Groups IDs (can be used multiples times)')
     parser.add_argument('-S', '--servicegroup', action='append', dest='SG_ID',  default= [], type=int, help='Services Groups IDs (can be used multiples times)')
+    parser.add_argument('--email_to', action='append', dest='email_to',  help='Sent the PDF to an email address (can be used multiples times)')
 
     args = parser.parse_args()
     
@@ -384,4 +478,30 @@ def get_command_line_args():
     GlobalVars.custom_period_start = args_custom_period_start if args_custom_period_start else default_custom_period_start
     GlobalVars.custom_period_end = args_custom_period_end if args_custom_period_end else default_custom_period_end
 
+
+    try:
+        GlobalVars.send_pdf_by_email = config.getboolean('SMTP', 'send_pdf_by_email')
+        
+        # Check if send pdf by email are enable configuration file.
+        if GlobalVars.send_pdf_by_email is True:
+            # If enable
+            # Get all SMTP parameters from configuration file.
+            get_smtp_parameters_from_config()
+
+            # PDF output filename path
+            args_email_to = args.email_to
+
+            # Check if the email address to is OK
+            if args_email_to:
+                
+                for e in args_email_to:
+                    if check_mail_syntax (e) is False:
+                        print ("ERROR: Invalid email To address.")
+                        sys.exit()
+
+            GlobalVars.email_to = args_email_to if args_email_to else GlobalVars.email_to
+            
+    except:
+        print ("ERROR: Problem with the SMTP configuration")
+        sys.exit()
 
