@@ -19,7 +19,7 @@ def sent_pdf_by_email():
             server = smtplib.SMTP(GlobalVars.email_server ,GlobalVars.email_port )
         
         # Disable debug messages
-        server.set_debuglevel(True)
+        server.set_debuglevel(False)
         
         # try one ehlo if not a helo
         server.ehlo_or_helo_if_needed()
