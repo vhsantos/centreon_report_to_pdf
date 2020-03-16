@@ -190,6 +190,66 @@ def get_smtp_parameters_from_config():
             sys.exit()
 
 
+
+########################################
+########################################
+# Get Cover Page parameters from configuration file.
+def get_cover_parameters_from_config():        
+    """Get Cover Page parameters from configuration file."""
+    
+    # get the path to logo file.
+    try:
+        logo_file = config.get('COVER', 'cover_logo_file')
+        
+        # Check if the logo file exists.
+        if os.path.exists (logo_file):
+            GlobalVars.cover_logo_file = config.get('COVER', 'cover_logo_file')
+        
+    except:
+        pass
+        
+    # get the size 
+    try:
+        logo_size_x = config.getint('COVER', 'cover_logo_size_x')
+        logo_size_y = config.getint('COVER', 'cover_logo_size_y')
+        
+        # Check the logo size is valid
+        if logo_size_x <= 100:
+            GlobalVars.cover_logo_size_x = config.getint('COVER', 'cover_logo_size_x')
+        if logo_size_y <= 50:
+            GlobalVars.cover_logo_size_y = config.getint('COVER', 'cover_logo_size_y')
+    except:
+        pass
+
+    # get the lines texts to title and text
+    try:
+        GlobalVars.cover_title_1 = config.get('COVER', 'cover_title_1')
+    except:
+        pass
+
+    try:
+        GlobalVars.cover_title_2 = config.get('COVER', 'cover_title_2')
+    except:
+        pass
+
+    try:
+        GlobalVars.cover_text_1 = config.get('COVER', 'cover_text_1')
+    except:
+        pass
+
+    try:
+        GlobalVars.cover_text_2 = config.get('COVER', 'cover_text_2')            
+    except:
+        pass
+
+    # Check if we need to add the date and server URL
+    try:
+        GlobalVars.cover_extra_info = config.getboolean('COVER', 'cover_extra_info')
+    except:
+        pass
+    
+
+
 ########################################
 ########################################
 # Get the pdf_output_file from configuration file.
@@ -484,7 +544,7 @@ def get_command_line_args():
     GlobalVars.custom_period_start = args_custom_period_start if args_custom_period_start else default_custom_period_start
     GlobalVars.custom_period_end = args_custom_period_end if args_custom_period_end else default_custom_period_end
 
-
+    # Email configuration 
     try:
         GlobalVars.send_pdf_by_email = config.getboolean('SMTP', 'send_pdf_by_email')
         
@@ -511,3 +571,16 @@ def get_command_line_args():
         print ("ERROR: Problem with the SMTP configuration")
         sys.exit()
 
+
+    
+    # Cover Page Configuration
+    try:
+        GlobalVars.include_cover_page = config.getboolean('COVER', 'include_cover_page')
+        
+        # Check if Cover page is enable or not
+        if GlobalVars.include_cover_page is True:
+            # Get all Cover Page parameters from configuration file.
+            get_cover_parameters_from_config()
+            
+    except:
+        pass

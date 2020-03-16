@@ -1,5 +1,5 @@
 from CentreonData import *
-
+from datetime import date
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.shapes import Drawing
 from reportlab.lib.colors import green, lightgreen,  red,  black,  orange,  grey,  blueviolet,  silver, salmon, whitesmoke
@@ -58,17 +58,9 @@ column_unrechable_alerts = [(6, 0), (6, -1)]
 column_scheduled_percent_hg = [(7, 0), (7, -1)]
 column_undetermined_alerts_hg = [(8, 0), (8, -1)]
 
+# create a empty variable 
 doc = None
-## Output document
-#doc = BaseDocTemplate(
-#    get_pdf_output_file_path(),
-#    pagesize=A4, 
-#    topMargin=DOCMARGIN,
-#    bottomMargin=DOCMARGIN,
-#    leftMargin=DOCMARGIN, 
-#    rightMargin=DOCMARGIN,
-#    showBoundary=1, 
-#)
+
 
 ########################################
 ########################################  
@@ -91,7 +83,7 @@ def stylesheet():
             bulletFontName='Courier',
             bulletFontSize=10,
             bulletIndent=0,
-            textColor= red,
+            textColor= black,
             backColor=None,
             wordWrap=None,
             borderWidth= 0,
@@ -105,6 +97,22 @@ def stylesheet():
             splitLongWords=1,
         ),
     }
+    
+    styles['cover_title'] = ParagraphStyle(
+       'cover_title',
+        fontName='Helvetica-Bold', 
+        fontSize=22,
+        leading=22,
+        alignment=TA_CENTER,
+    )
+
+    styles['cover_text'] = ParagraphStyle(
+       'cover_text',
+        fontName='Courier-Bold', 
+        fontSize=14,
+        leading=28,
+        alignment=TA_CENTER,
+    )
     
     styles['table_default'] = TableStyle([
             ('GRID',(0,0),(-1,-1),0.5,grey),
@@ -237,6 +245,9 @@ def stylesheet():
 
 styles = stylesheet()
 styleNormal = styles['default']
+styleCoverTitle = styles['cover_title']
+styleCoverText = styles['cover_text']
+
 styleTable = styles['table_default']
 styleTableDetailsHead_SG = styles['table_details_head_SG']
 styleTableDetails_SG = styles['table_details_SG']
@@ -490,9 +501,6 @@ def build_table_details():
 #  Function to build the PDF report with graph and tables
 def prepare_report():
     """Function to build the PDF report with graph and tables"""
-    
-#    # Get the CSV file paht and use it global
-#    GlobalVars.csv_filepath = get_csv_path()
   
     # Define the variable contents
     contents =[]
@@ -500,11 +508,25 @@ def prepare_report():
     # Initiate some variables based on the type of report (SG or HG)
     get_centreon_report_type()
 
+# TODO: add first page check if cover is enable
+    Frame_cover_image = Frame(50*mm, (height-100*mm), 110*mm, 55*mm,showBoundary = 0)
+    Frame_cover_title1 = Frame(30*mm, (height-150*mm), 150*mm, 20*mm,showBoundary = 0)
+    Frame_cover_title2 = Frame(30*mm, (height-170*mm), 150*mm, 20*mm,showBoundary = 0)
+    Frame_cover_text1 = Frame(30*mm, (height-220*mm), 150*mm, 40*mm,showBoundary = 0)
+    Frame_cover_info = Frame(30*mm, (height-270*mm), 150*mm, 40*mm,showBoundary = 0)
+    
+    framesCoverPage = []
+    framesCoverPage.append(Frame_cover_image)
+    framesCoverPage.append(Frame_cover_title1)
+    framesCoverPage.append(Frame_cover_title2)
+    framesCoverPage.append(Frame_cover_text1)
+    framesCoverPage.append(Frame_cover_info)
+
     # Define some Frames to Page 02
-    Frame_Graphic = Frame(5*mm, height-80*mm, (width-10*mm)/2, 75*mm,showBoundary = 0)
-    Frame_Info = Frame((width)/2, height-30*mm, (width-10*mm)/2, 25*mm,showBoundary = 0)
-    Frame_Resume = Frame((width)/2, height-80*mm, (width-10*mm)/2, 50*mm,showBoundary = 0)
-    Frame_Details = Frame(5*mm, 5*mm, (width-10*mm), height-85*mm,showBoundary = 0)
+    Frame_Graphic = Frame(5*mm, height-80*mm, (width-10*mm)/2, 75*mm,showBoundary = 1)
+    Frame_Info = Frame((width)/2, height-30*mm, (width-10*mm)/2, 25*mm,showBoundary = 1)
+    Frame_Resume = Frame((width)/2, height-80*mm, (width-10*mm)/2, 50*mm,showBoundary = 1)
+    Frame_Details = Frame(5*mm, 5*mm, (width-10*mm), height-85*mm,showBoundary = 1)
 
     # Create a list with all frames to be in the second page
     framesSecondPage = []
@@ -514,7 +536,7 @@ def prepare_report():
     framesSecondPage.append(Frame_Details)
 
     # Define other Frames (all page) if table_details need more than one page
-    Frame_Details_Continue = Frame(5*mm, 5*mm, (width-10*mm), (height-10*mm),showBoundary = 0)
+    Frame_Details_Continue = Frame(5*mm, 5*mm, (width-10*mm), (height-10*mm),showBoundary = 1)
 
     # Create a list with frame to be in the anothers pages
     framesOthersPages = []
@@ -522,11 +544,34 @@ def prepare_report():
 
     # Create a list of templates and associate the frames list to it.
     templates = []
+
+    # check if we need to add a Cover Page 
+    if GlobalVars.include_cover_page is True:
+        templates.append(PageTemplate(frames=framesCoverPage, id="coverpage"))
+        
     templates.append(PageTemplate(frames=framesSecondPage, id="secondpage",onPage=foot1))
     templates.append(PageTemplate(frames=framesOthersPages, id="otherspages",onPage=foot2))
     
     # Add this templates to document.
     doc.addPageTemplates(templates)
+  
+    # check if we need to add a Cover Page 
+    if GlobalVars.include_cover_page is True:
+
+        contents.append(NextPageTemplate('coverpage'))
+    
+        for cover_content in prepare_cover_page():
+            contents.append (cover_content)
+        
+        # Only one cover page are allowed.
+        GlobalVars.include_cover_page = False 
+
+
+
+  
+  ######################################################
+  ######################################################
+  
   
     # Next content will be on Frame_Info at second page 
     contents.append(NextPageTemplate('secondpage'))
@@ -565,13 +610,55 @@ def prepare_report():
 
     return contents
 
+
+########################################
+########################################  
+# Function to build the PDF cover page
+def prepare_cover_page():
+    """Function to build the PDF cover page"""
+  
+    # Define the variable contents
+    contents =[]
+    
+    # Setup the logo image
+    logo = Image(GlobalVars.cover_logo_file,  GlobalVars.cover_logo_size_x * mm ,  GlobalVars.cover_logo_size_y * mm)
+    logo._restrictSize( GlobalVars.cover_logo_size_x * mm ,  GlobalVars.cover_logo_size_y * mm)
+    logo.hAlign = 'CENTER'
+    contents.append(logo)
+    contents.append(FrameBreak())
+
+    
+    # Title first line
+    contents.append(Paragraph(GlobalVars.cover_title_1 , styleCoverTitle))
+    contents.append(FrameBreak())
+    
+    # Title second line
+    contents.append(Paragraph(GlobalVars.cover_title_2 , styleCoverTitle))
+    contents.append(FrameBreak())
+
+    # text first line
+    contents.append(Paragraph(GlobalVars.cover_text_1 , styleCoverText))
+    contents.append(Paragraph(GlobalVars.cover_text_2 , styleCoverText))
+    contents.append(FrameBreak())
+
+    # check if we need to add tech data
+    if GlobalVars.cover_extra_info is True:
+        # get the date from today
+        today = date.today()
+        contents.append(Paragraph("Date: " + today.strftime("%d/%B/%Y") , styleCoverText))
+        # get the URL from configuration file.
+        contents.append(Paragraph(GlobalVars.server_url , styleCoverText))
+
+    return contents
+
+
 ########################################
 ########################################  
 def build_report():
     
     global doc
     
-        # Output document
+    # Output document
     doc = BaseDocTemplate(
         GlobalVars.pdf_output_file,
         pagesize=A4, 
@@ -579,7 +666,7 @@ def build_report():
         bottomMargin=DOCMARGIN,
         leftMargin=DOCMARGIN, 
         rightMargin=DOCMARGIN,
-        showBoundary=1, 
+        showBoundary=0, 
     )
 
     # Create a variable to content all story.
@@ -599,5 +686,4 @@ def build_report():
     # Build the Document. Finally !!! :D
     doc.build(all_contents)
 
-    # TODO
-    # Store and sendemail
+
