@@ -613,10 +613,11 @@ def prepare_cover_page():
     contents =[]
     
     # Setup the logo image
-    logo = Image(GlobalVars.cover_logo_file,  GlobalVars.cover_logo_size_x * mm ,  GlobalVars.cover_logo_size_y * mm)
-    logo._restrictSize( GlobalVars.cover_logo_size_x * mm ,  GlobalVars.cover_logo_size_y * mm)
-    logo.hAlign = 'CENTER'
-    contents.append(logo)
+    if GlobalVars.cover_logo_file != '':
+        logo = Image(GlobalVars.cover_logo_file,  GlobalVars.cover_logo_size_x * mm ,  GlobalVars.cover_logo_size_y * mm)
+        logo._restrictSize( GlobalVars.cover_logo_size_x * mm ,  GlobalVars.cover_logo_size_y * mm)
+        logo.hAlign = 'CENTER'
+        contents.append(logo)
     contents.append(FrameBreak())
 
     # Title first line
