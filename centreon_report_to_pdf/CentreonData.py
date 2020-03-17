@@ -87,7 +87,7 @@ def get_centreon_csv_details_HG ():
 
     # read the CSV file after line 15 where the headers start
     # Force dtype to "Unknown Alert" - BUG :-(
-    csv_details = pd.read_csv (GlobalVars.csv_download_filepath,  sep=";",  skiprows=11, skip_blank_lines=False,  usecols=COLUMN_DATA,  dtype={"Unknown Alert":'str'})
+    csv_details = pd.read_csv (GlobalVars.csv_download_filepath,  sep=";",  skiprows=11, skip_blank_lines=False,  usecols=COLUMN_DATA,  dtype={"Unreachable Alert":'str'})
     
     # check by blank lines
     try:
@@ -101,13 +101,24 @@ def get_centreon_csv_details_HG ():
         
     # Clean trash (% or spaces) at numerics columns
     for col_name in COLUMN_DATA:
-        if col_name != "Hosts" and col_name != "Service":
+        if col_name != 'Hosts' and col_name != 'Service':
             csv_details[col_name] = csv_details[col_name].astype(str).str.replace('%', '')
             csv_details[col_name] = csv_details[col_name].astype(str).str.replace(' ', '')
 
     # Rename columns names that will be in the PDF
-#    csv_details.columns = ['Host', 'Service', 'OK', '', 'Warning', '', 'Critical', '', 'Unknown', '', 'Scheduled', 'Undetermined']
     csv_details.columns = ['Hosts', 'Up', '', 'Down', '', 'Unreachable', '', 'Scheduled', 'Undetermined']
+
+    # convert all percentages to float
+    for col_name in ['Up', 'Down', 'Unreachable', 'Scheduled', 'Undetermined']:
+        csv_details[col_name] = csv_details[col_name].astype(float)
+ 
+    # Convert all alers columns to integer
+    csv_details[''] = csv_details[''].astype(int)
+
+
+    # Sort CSV by OK descending (to get focus in the most worse first)
+    if GlobalVars.sort_data_by_name is False:
+        csv_details.sort_values([ 'Up', 'Hosts'] ,  axis=0, ascending=[True,True] , inplace=True )
 
     # Retun the details dataframe
     return csv_details
@@ -152,9 +163,20 @@ def get_centreon_csv_details_SG ():
         if col_name != "Host" and col_name != "Service":
             csv_details[col_name] = csv_details[col_name].astype(str).str.replace('%', '')
             csv_details[col_name] = csv_details[col_name].astype(str).str.replace(' ', '')
-
+            
     # Rename columns names that will be in the PDF
     csv_details.columns = ['Host', 'Service', 'OK', '', 'Warning', '', 'Critical', '', 'Unknown', '', 'Scheduled', 'Undetermined']
+    
+    # convert all percentages to float
+    for col_name in ['OK', 'Warning', 'Critical', 'Unknown', 'Scheduled', 'Undetermined']:
+        csv_details[col_name] = csv_details[col_name].astype(float)
+    
+    # Convert all alers columns to integer
+    csv_details[''] = csv_details[''].astype(int)
+
+    # Sort CSV by OK descending (to get focus in the most worse first)
+    if GlobalVars.sort_data_by_name is False:
+        csv_details.sort_values(["OK", "Host",  "Service"] ,  axis=0, ascending=[True,True,True] , inplace=True )
 
     # Retun the details dataframe
     return csv_details
