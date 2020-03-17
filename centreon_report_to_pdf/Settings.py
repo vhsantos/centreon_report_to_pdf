@@ -10,7 +10,6 @@ from dateutil.parser import parse
 import GlobalVars 
 
 
-
 ########################################
 ########################################
 # Get the HostGroup IDs from ID section
@@ -190,7 +189,6 @@ def get_smtp_parameters_from_config():
             sys.exit()
 
 
-
 ########################################
 ########################################
 # Get Cover Page parameters from configuration file.
@@ -252,6 +250,7 @@ def get_cover_parameters_from_config():
         GlobalVars.cover_date_format = config.get('COVER', 'cover_date_format')
     except:
         pass
+
 
 ########################################
 ########################################

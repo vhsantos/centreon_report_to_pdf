@@ -17,7 +17,5 @@ if __name__== "__main__":
         sent_pdf_by_email()
 
 
-### TODO
+# TODO
 # - Add more arguments options
-# - Add a cover page.
-
