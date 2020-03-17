@@ -586,3 +586,9 @@ def get_command_line_args():
             
     except:
         pass
+
+    # Sort CSV data by host/service name or by downtime %
+    try:
+        GlobalVars.sort_data_by_name = config.getboolean('REPORT', 'sort_data_by_name')
+    except:
+        pass

@@ -12,6 +12,7 @@ custom_period_start = None
 custom_period_end = None
 pdf_output_file = 'centreon_report.pdf'
 csv_download_filepath = '/tmp/centreon.csv'
+sort_data_by_name = True
 
 #[REPORTS_ID]
 hosts_groups = [0]
