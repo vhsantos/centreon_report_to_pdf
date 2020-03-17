@@ -42,7 +42,7 @@ def sent_pdf_by_email():
 
     except Exception as e:
         # If have any problem..
-        print ("EROR: can't connect with the SMTP server")
+        print ("ERROR: can't connect with the SMTP server")
         print (e)
         sys.exit()
 
@@ -69,7 +69,7 @@ def sent_pdf_by_email():
     try:
         server.sendmail(email_from, email_to, msg.as_string())
     except Exception as e:
-        print ("EROR: Problem sending the email")
+        print ("ERROR: Problem sending the email")
         print (e)
         server.quit()
         sys.exit()
