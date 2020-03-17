@@ -248,7 +248,10 @@ def get_cover_parameters_from_config():
     except:
         pass
     
-
+    try:
+        GlobalVars.cover_date_format = config.get('COVER', 'cover_date_format')
+    except:
+        pass
 
 ########################################
 ########################################
@@ -483,7 +486,7 @@ def get_command_line_args():
     #Change the configuration file by default if it was set on command line.
     # Default is: config.ini
     global config
-    config = configparser.ConfigParser(allow_no_value=True)
+    config = configparser.ConfigParser(allow_no_value=True, interpolation=None )
     final_config_file = args.config_file
     config.read(final_config_file)
     

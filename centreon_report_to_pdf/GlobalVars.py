@@ -40,3 +40,4 @@ cover_title_2 = ''
 cover_text_1 = ''
 cover_text_2 = ''
 cover_extra_info = True
+cover_date_format = '%d/%B/%Y'

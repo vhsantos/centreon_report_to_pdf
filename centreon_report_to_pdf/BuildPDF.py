@@ -247,7 +247,6 @@ styles = stylesheet()
 styleNormal = styles['default']
 styleCoverTitle = styles['cover_title']
 styleCoverText = styles['cover_text']
-
 styleTable = styles['table_default']
 styleTableDetailsHead_SG = styles['table_details_head_SG']
 styleTableDetails_SG = styles['table_details_SG']
@@ -508,13 +507,14 @@ def prepare_report():
     # Initiate some variables based on the type of report (SG or HG)
     get_centreon_report_type()
 
-# TODO: add first page check if cover is enable
+    # Define frames to cover Page
     Frame_cover_image = Frame(50*mm, (height-100*mm), 110*mm, 55*mm,showBoundary = 0)
     Frame_cover_title1 = Frame(30*mm, (height-150*mm), 150*mm, 20*mm,showBoundary = 0)
     Frame_cover_title2 = Frame(30*mm, (height-170*mm), 150*mm, 20*mm,showBoundary = 0)
     Frame_cover_text1 = Frame(30*mm, (height-220*mm), 150*mm, 40*mm,showBoundary = 0)
     Frame_cover_info = Frame(30*mm, (height-270*mm), 150*mm, 40*mm,showBoundary = 0)
-    
+
+    # Create a list with all frames to be in the cover page
     framesCoverPage = []
     framesCoverPage.append(Frame_cover_image)
     framesCoverPage.append(Frame_cover_title1)
@@ -545,10 +545,9 @@ def prepare_report():
     # Create a list of templates and associate the frames list to it.
     templates = []
 
-    # check if we need to add a Cover Page 
+    # check if we need to add a Cover Page to templates
     if GlobalVars.include_cover_page is True:
         templates.append(PageTemplate(frames=framesCoverPage, id="coverpage"))
-        
     templates.append(PageTemplate(frames=framesSecondPage, id="secondpage",onPage=foot1))
     templates.append(PageTemplate(frames=framesOthersPages, id="otherspages",onPage=foot2))
     
@@ -557,21 +556,14 @@ def prepare_report():
   
     # check if we need to add a Cover Page 
     if GlobalVars.include_cover_page is True:
-
         contents.append(NextPageTemplate('coverpage'))
     
+        # Prepare the Cover Page
         for cover_content in prepare_cover_page():
             contents.append (cover_content)
         
         # Only one cover page are allowed.
         GlobalVars.include_cover_page = False 
-
-
-
-  
-  ######################################################
-  ######################################################
-  
   
     # Next content will be on Frame_Info at second page 
     contents.append(NextPageTemplate('secondpage'))
@@ -627,7 +619,6 @@ def prepare_cover_page():
     contents.append(logo)
     contents.append(FrameBreak())
 
-    
     # Title first line
     contents.append(Paragraph(GlobalVars.cover_title_1 , styleCoverTitle))
     contents.append(FrameBreak())
@@ -636,7 +627,7 @@ def prepare_cover_page():
     contents.append(Paragraph(GlobalVars.cover_title_2 , styleCoverTitle))
     contents.append(FrameBreak())
 
-    # text first line
+    # Text lines
     contents.append(Paragraph(GlobalVars.cover_text_1 , styleCoverText))
     contents.append(Paragraph(GlobalVars.cover_text_2 , styleCoverText))
     contents.append(FrameBreak())
@@ -645,7 +636,7 @@ def prepare_cover_page():
     if GlobalVars.cover_extra_info is True:
         # get the date from today
         today = date.today()
-        contents.append(Paragraph("Date: " + today.strftime("%d/%B/%Y") , styleCoverText))
+        contents.append(Paragraph(today.strftime(GlobalVars.cover_date_format) , styleCoverText))
         # get the URL from configuration file.
         contents.append(Paragraph(GlobalVars.server_url , styleCoverText))
 
