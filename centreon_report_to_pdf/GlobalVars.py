@@ -30,3 +30,14 @@ email_authentication = False
 email_username = None
 email_password = None
 
+#[COVER]
+include_cover_page = False
+cover_logo_file = ''
+cover_logo_size_x = 100
+cover_logo_size_y = 50
+cover_title_1 = 'Availability Report'
+cover_title_2 = ''
+cover_text_1 = ''
+cover_text_2 = ''
+cover_extra_info = True
+cover_date_format = '%d/%B/%Y'
