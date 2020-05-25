@@ -1,0 +1,12 @@
+include README.md
+include centreon_report_to_pdf/BuildPDF.py
+include centreon_report_to_pdf/CentreonData.py
+include centreon_report_to_pdf/centreon_report_to_pdf.py
+include centreon_report_to_pdf/config_example.ini
+include centreon_report_to_pdf/email_body.txt
+include centreon_report_to_pdf/GlobalVars.py
+include centreon_report_to_pdf/__init__.py
+include centreon_report_to_pdf/requirements.txt
+include centreon_report_to_pdf/Settings.pyc
+include centreon_report_to_pdf/SMTP.py
+
