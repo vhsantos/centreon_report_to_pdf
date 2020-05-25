@@ -4,8 +4,9 @@
 name: Upload Python Package
 
 on:
-  release:
-    types: [created]
+  push
+#  release:
+#    types: [created]
 
 jobs:
   deploy:
@@ -13,11 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@master
       with:
-        python-version: '3.x'
+        python-version: '3.5'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -27,5 +28,5 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        python setup.py sdist bdist_wheel
+        python setup.py sdist dist_wheel
         twine upload dist/*
