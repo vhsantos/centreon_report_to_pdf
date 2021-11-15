@@ -444,13 +444,32 @@ def prepare_login_url():
 def download_csv(url_csv):
     # GET the URL to login
     LOGIN_URL =  prepare_login_url()
+
+    # Create a session
+    centreon_session = requests.session()
+
+    # Check for proxy settings on the configuration file (optional)
+    try:
+        proxy_host = config.get('CENTREON_SERVER', 'proxy_host')
+        proxy_port = config.get('CENTREON_SERVER', 'proxy_port')
+        proxy_auth = config.get('CENTREON_SERVER', 'proxy_auth', fallback=':')
+
+        # Proxy setup
+        if proxy_host != "" and proxy_port != "":
+            proxies = {
+                "https": "https://{}@{}:{}/".format(proxy_auth, proxy_host, proxy_port),
+                "http": "http://{}@{}:{}/".format(proxy_auth, proxy_host, proxy_port)
+            }
+            # Update session with proxy parameters
+            centreon_session.proxies.update(proxies)
+    except:
+        pass
     
     # Check if user have been disabled the SSL verification. Bad idea, but necesary to work with autosign/expired certificates
     verify_ssl = config.getboolean('CENTREON_SERVER', 'verify_ssl', fallback=True)
+    centreon_session.verify = verify_ssl
 
     # Login and get the session/cookies.
-    centreon_session = requests.session()
-    centreon_session.verify = verify_ssl
     centreon_session.get(LOGIN_URL)
     
     # Download CSV file
