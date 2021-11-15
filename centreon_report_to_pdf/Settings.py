@@ -445,8 +445,12 @@ def download_csv(url_csv):
     # GET the URL to login
     LOGIN_URL =  prepare_login_url()
     
+    # Check if user have been disabled the SSL verification. Bad idea, but necesary to work with autosign/expired certificates
+    verify_ssl = config.getboolean('CENTREON_SERVER', 'verify_ssl', fallback=True)
+
     # Login and get the session/cookies.
     centreon_session = requests.session()
+    centreon_session.verify = verify_ssl
     centreon_session.get(LOGIN_URL)
     
     # Download CSV file
