@@ -1,3 +1,4 @@
 reportlab>=3.5
 pandas>=1.0
 requests>=2.23
+pytz>=2022.1
