@@ -7,6 +7,7 @@ import requests
 import sys
 from datetime import datetime as dt
 from dateutil.parser import parse
+import pytz
 import GlobalVars 
 
 
@@ -328,6 +329,12 @@ def convert_periodo_to_timestamp():
     custom_period_start = GlobalVars.custom_period_start
     custom_period_end= GlobalVars.custom_period_end
     
+    server_timezone = config.get('CENTREON_SERVER', 'Timezone', fallback='utc')
+    try:
+        server_timezone = pytz.timezone(server_timezone)
+    except Exception as e:
+        print(f'Error trying to setup the timezone {server_timezone}: {e}')
+
     # Get the actual date/time.
     now = dt.now()
     
@@ -366,6 +373,10 @@ def convert_periodo_to_timestamp():
         start_date = custom_period_start
         end_date = custom_period_end
     
+    
+    start_date = start_date.astimezone(server_timezone)
+    end_date = end_date.astimezone(server_timezone)
+
     # Convert dates to integer/timestamps
     start_date = int(start_date.replace(hour=0, minute=0, second=0, microsecond=0).timestamp())
     end_date = int(end_date.replace(hour=0, minute=0, second=0, microsecond=0).timestamp())
