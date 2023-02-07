@@ -4,8 +4,8 @@ from SMTP import sent_pdf_by_email
 import GlobalVars
 
 
-if __name__== "__main__":
-    
+if __name__ == "__main__":
+
     # Get and set options in base to configuration file or command line arguments.
     get_command_line_args()
 
