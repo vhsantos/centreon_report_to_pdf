@@ -446,13 +446,29 @@ def build_table_details():
         subhead = [['', '', '%', 'Alert', '%', 'Alert',
                     '%', 'Alert', '%', 'Alert', 'Downtimes', '%']]
 
+        for index, row in data_df.iterrows():
+            data_df.loc[index, 'Host'] = Paragraph(
+                str(row['Host']), styleNormal)
+            data_df.loc[index, 'Service'] = Paragraph(
+                str(row['Service']), styleNormal)
+
         # Conact the header + sub_header and data to list
         data_list = [data_df.columns.values.tolist()] + list(subhead) + \
             data_df.values.tolist()
 
+        # Get the value of the column size for the host and service
+        if GlobalVars.column_size_host == 'auto' or GlobalVars.column_size_service == 'auto':
+            columns_table_sizes = ['*', '*',  10*mm,  10*mm,  10*mm,
+                                   10*mm,  10*mm,  10*mm, 10*mm,  10*mm,  20*mm,  20*mm]
+        # if not setup, put it on automatically (default)
+        else:
+            columns_table_sizes = [GlobalVars.column_size_host*mm, GlobalVars.column_size_service *
+                                   mm,  10*mm,  10*mm,  10*mm,  10*mm,  10*mm,  10*mm, 10*mm,  10*mm,  20*mm,  20*mm]
+
         # Generate the table using the list and repeat the headers if necesary
-        table = Table(data=data_list,  repeatRows=2,  colWidths=[
-                      '*', '*',  10*mm,  10*mm,  10*mm,  10*mm,  10*mm,  10*mm, 10*mm,  10*mm,  20*mm,  20*mm])
+        # Fixed hosts/services columns values are need to allow paragraph text wrap works correctly if there is no spaces.
+        table = Table(data=data_list,  repeatRows=2,
+                      colWidths=columns_table_sizes)
 
         # Apply some styles to table and cells
         table.setStyle(styleTable)

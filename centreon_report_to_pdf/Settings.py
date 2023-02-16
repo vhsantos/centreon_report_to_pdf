@@ -651,3 +651,18 @@ def get_command_line_args():
             'REPORT', 'sort_data_by_name')
     except:
         pass
+
+    # Get the value of the column size for the host
+    try:
+        GlobalVars.column_size_host = config.getint(
+            'REPORT', 'column_size_host')
+
+    except:
+        pass
+
+    # Get the value of the column size for the service
+    try:
+        GlobalVars.column_size_service = config.getint(
+            'REPORT', 'column_size_service')
+    except:
+        pass
